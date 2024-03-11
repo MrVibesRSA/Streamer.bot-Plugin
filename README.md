@@ -1,9 +1,9 @@
 # Streamer.bot Plugin
  Streamer.bot plugin for Mecro Deck.
 
-## Useful links
-[Streamer.bot](https://streamer.bot/)
-[Macro Deck](https://macrodeck.org/)
+### Useful links
++[Streamer.bot](https://streamer.bot/)
++[Macro Deck](https://macrodeck.org/)
 
 ### Streamer.bot - Actions
  A collection of MrVibes_RSA's streamer.bot actions.
