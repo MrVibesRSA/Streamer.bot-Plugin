@@ -11,19 +11,19 @@ To enhance your streaming experience, you can connect Macro Deck to a Streamer.b
 
 First, ensure you have the WebSocket server details provided by your Streamer.bot app. This typically includes the server address, port number, and endpoint.
 
-![Example: Connection to Streamer.bot B](images/Connection_to_Streamer.bot_B.png)
+![Example: Connection to Streamer.bot B](Images/Connection_to_Streamer.bot_B.png)
 
 ### Step 2: Configure Macro Deck Streamer.bot Plugin
 
 Open the Macro Deck app and navigate to the plugin section to open the configuration settings.
 
-![Example: Connection to Streamer.bot A](images/Connection_to_Streamer.bot_A.png)
+![Example: Connection to Streamer.bot A](Images/Connection_to_Streamer.bot_A.png)
 
 ### Step 3: Enter Server Details
 
 Enter the WebSocket server address, port number, and endpoint provided by your Streamer.bot app into the appropriate fields in Macro Deck Streamer.bot Plugin settings and click Connect. You will now be able to add Macro Deck buttons to run Streamer.bot actions.
 
-![Example: Streamer.bot Actions](images/Streamer.bot_Actions.png)
+![Example: Streamer.bot Actions](Images/Streamer.bot_Actions.png)
 
 ---
 
@@ -33,15 +33,15 @@ Enter the WebSocket server address, port number, and endpoint provided by your S
 
 To do so, first, copy the Streamer.bot action code from the plugin config and paste it into the Streamer.bot import action section. You will now have an action that triggers every time a Global Variable updates.
 
-![Example: Import Code](images/Import_Code.png)
+![Example: Import Code](Images/Import_Code.png)
 
 ### Step 2: Using Global Variables in Macro Deck
 
 Once the Global Variable updates, the plugin will catch them in a data grid. If you would like to use the variables in Macro Deck, all you need to do is check them, and they will be available to Macro Deck.
 
-![Example: Globals Data Grid](images/Globals_Data_Grid.png)
+![Example: Globals Data Grid](Images/Globals_Data_Grid.png)
 
-![Example: Macro Deck Variables](images/Macro_Deck_Variables.png)
+![Example: Macro Deck Variables](Images/Macro_Deck_Variables.png)
 
 ---
 
