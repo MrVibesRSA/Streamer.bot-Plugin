@@ -11,13 +11,13 @@ To enhance your streaming experience, you can connect Macro Deck to a Streamer.b
 
 First, ensure you have the WebSocket server details provided by your Streamer.bot app. This typically includes the server address, port number, and endpoint.
 
-![Example: Connection to Streamer.bot B](Images/Connection_to_Streamer.bot_B.png)
+![Example: Connection to Streamer.bot B](Images/ConnectionToStreamer.botB.png)
 
 ### Step 2: Configure Macro Deck Streamer.bot Plugin
 
 Open the Macro Deck app and navigate to the plugin section to open the configuration settings.
 
-![Example: Connection to Streamer.bot A](Images/Connection_to_Streamer.bot_A.png)
+![Example: Connection to Streamer.bot A](Images/ConnectionToStreamer.botA.png)
 
 ### Step 3: Enter Server Details
 
