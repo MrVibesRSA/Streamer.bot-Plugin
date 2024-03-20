@@ -45,6 +45,7 @@ Once the Global Variable updates, the plugin will catch them in a data grid. If 
 
 ---
 
+
 ### Useful Links
 - [Streamer.bot](https://streamer.bot/)
 - [Macro Deck](https://macrodeck.org/)
