@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "I:\\Github\\Broken\\MrVibes_RSA.Streamer.Bot\\StreamerbotPlugin\\StreamerbotPlugin.csproj": {}
+    "I:\\Github\\StreamerbotPlugin\\StreamerbotPlugin.csproj": {}
   },
   "projects": {
-    "I:\\Github\\Broken\\MrVibes_RSA.Streamer.Bot\\StreamerbotPlugin\\StreamerbotPlugin.csproj": {
-      "version": "1.0.0",
+    "I:\\Github\\StreamerbotPlugin\\StreamerbotPlugin.csproj": {
+      "version": "1.1.0",
       "restore": {
-        "projectUniqueName": "I:\\Github\\Broken\\MrVibes_RSA.Streamer.Bot\\StreamerbotPlugin\\StreamerbotPlugin.csproj",
+        "projectUniqueName": "I:\\Github\\StreamerbotPlugin\\StreamerbotPlugin.csproj",
         "projectName": "Streamer.bot Plugin",
-        "projectPath": "I:\\Github\\Broken\\MrVibes_RSA.Streamer.Bot\\StreamerbotPlugin\\StreamerbotPlugin.csproj",
+        "projectPath": "I:\\Github\\StreamerbotPlugin\\StreamerbotPlugin.csproj",
         "packagesPath": "C:\\Users\\drkdg\\.nuget\\packages\\",
-        "outputPath": "I:\\Github\\Broken\\MrVibes_RSA.Streamer.Bot\\StreamerbotPlugin\\obj\\",
+        "outputPath": "I:\\Github\\StreamerbotPlugin\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\drkdg\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -31,6 +31,9 @@
           }
         },
         "warningProperties": {
+          "noWarn": [
+            "NU1701"
+          ],
           "warnAsError": [
             "NU1605"
           ]
@@ -48,6 +51,10 @@
             "Newtonsoft.Json": {
               "target": "Package",
               "version": "[13.0.3, )"
+            },
+            "WebSocketSharp": {
+              "target": "Package",
+              "version": "[1.0.3-rc11, )"
             }
           },
           "imports": [

@@ -14,6 +14,15 @@
             "related": ".xml"
           }
         }
+      },
+      "WebSocketSharp/1.0.3-rc11": {
+        "type": "package",
+        "compile": {
+          "lib/websocket-sharp.dll": {}
+        },
+        "runtime": {
+          "lib/websocket-sharp.dll": {}
+        }
       }
     }
   },
@@ -47,24 +56,38 @@
         "newtonsoft.json.nuspec",
         "packageIcon.png"
       ]
+    },
+    "WebSocketSharp/1.0.3-rc11": {
+      "sha512": "7VCF7f7zVMOvLGD8LeGS4DVXc8lOcB6kXnUMeTxigu+PMiU+6wW5Olq2gYrDU8vDRKOwFY+5RyBaLyzb8skEzA==",
+      "type": "package",
+      "path": "websocketsharp/1.0.3-rc11",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/websocket-sharp.dll",
+        "lib/websocket-sharp.xml",
+        "websocketsharp.1.0.3-rc11.nupkg.sha512",
+        "websocketsharp.nuspec"
+      ]
     }
   },
   "projectFileDependencyGroups": {
     "net8.0-windows7.0": [
-      "Newtonsoft.Json >= 13.0.3"
+      "Newtonsoft.Json >= 13.0.3",
+      "WebSocketSharp >= 1.0.3-rc11"
     ]
   },
   "packageFolders": {
     "C:\\Users\\drkdg\\.nuget\\packages\\": {}
   },
   "project": {
-    "version": "1.0.0",
+    "version": "1.1.0",
     "restore": {
-      "projectUniqueName": "I:\\Github\\Broken\\MrVibes_RSA.Streamer.Bot\\StreamerbotPlugin\\StreamerbotPlugin.csproj",
+      "projectUniqueName": "I:\\Github\\StreamerbotPlugin\\StreamerbotPlugin.csproj",
       "projectName": "Streamer.bot Plugin",
-      "projectPath": "I:\\Github\\Broken\\MrVibes_RSA.Streamer.Bot\\StreamerbotPlugin\\StreamerbotPlugin.csproj",
+      "projectPath": "I:\\Github\\StreamerbotPlugin\\StreamerbotPlugin.csproj",
       "packagesPath": "C:\\Users\\drkdg\\.nuget\\packages\\",
-      "outputPath": "I:\\Github\\Broken\\MrVibes_RSA.Streamer.Bot\\StreamerbotPlugin\\obj\\",
+      "outputPath": "I:\\Github\\StreamerbotPlugin\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\drkdg\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -84,6 +107,9 @@
         }
       },
       "warningProperties": {
+        "noWarn": [
+          "NU1701"
+        ],
         "warnAsError": [
           "NU1605"
         ]
@@ -101,6 +127,10 @@
           "Newtonsoft.Json": {
             "target": "Package",
             "version": "[13.0.3, )"
+          },
+          "WebSocketSharp": {
+            "target": "Package",
+            "version": "[1.0.3-rc11, )"
           }
         },
         "imports": [

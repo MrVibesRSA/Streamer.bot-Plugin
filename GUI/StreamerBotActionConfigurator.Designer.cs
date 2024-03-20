@@ -1,6 +1,7 @@
 ﻿
 
 using SuchByte.MacroDeck.GUI.CustomControls;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace MrVibes_RSA.StreamerbotPlugin.GUI

@@ -14,6 +14,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = MrVibesRSA.StreamerbotPlugin
-build_property.ProjectDir = I:\Github\Broken\MrVibes_RSA.Streamer.Bot\StreamerbotPlugin\
+build_property.ProjectDir = I:\Github\StreamerbotPlugin\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 

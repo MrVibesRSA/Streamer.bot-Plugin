@@ -6,13 +6,12 @@ using SuchByte.MacroDeck.GUI.CustomControls;
 using SuchByte.MacroDeck.Logging;
 using SuchByte.MacroDeck.Plugins;
 using System;
-using System.Net.Http;
-using System.Text;
 
 namespace MrVibes_RSA.StreamerbotPlugin.Actions
 {
     public class StreamerBotAction : PluginAction
     {
+        private WebSocketClient webSocketClient = WebSocketClient.Instance;
         // The name of the action
         public override string Name => "Run Action";
 
@@ -46,59 +45,27 @@ namespace MrVibes_RSA.StreamerbotPlugin.Actions
 
         }
 
-        private async void DoStreamerbotAction(string configuration)
+        private void DoStreamerbotAction(string configuration)
         {
-            var ip = SuchByte.MacroDeck.Plugins.PluginConfiguration.GetValue(PluginInstance.Main, "IPAddress");
-            var port = SuchByte.MacroDeck.Plugins.PluginConfiguration.GetValue(PluginInstance.Main, "PortNumber");
-
-            // Define the base URL of the API
-            string baseUrl = $"http://{ip}:{port}";
-
-            // Define the endpoint
-            string endpoint = "/DoAction";
-
             try
             {
                 // Parse the configuration string into a JObject
                 var configObject = JsonConvert.DeserializeObject<dynamic>(configuration);
 
-                // Define the action data
-                var actionData = new
-                {
-                    action = new
-                    {
-                        id = (string)configObject.actionId,
-                        name = (string)configObject.actionName
-                    },
-                    args = new
-                    {
-                        key = (string)configObject.actionArgument
-                    }
-                };
+                // Define the request object
+                string json = "{\n" +
+                    "  \"request\": \"DoAction\",\n" +
+                    "  \"action\": {\n" +
+                    $"    \"id\": \"{(string)configObject.actionId}\",\n" +
+                    $"    \"name\": \"{(string)configObject.actionName}\"\n" +
+                    "  },\n" +
+                    "  \"args\": {\n" +
+                    $"    \"key\": \"{(string)configObject.actionArgument}\"\n" +
+                    "  },\n" +
+                    $"  \"id\": \"{Guid.NewGuid()}\"\n" +
+                    "}"; 
 
-                // Serialize the action data to JSON
-                string jsonData = JsonConvert.SerializeObject(actionData);
-
-                // Create a HttpClient
-                using (var httpClient = new HttpClient())
-                {
-                    // Create a StringContent with JSON data
-                    var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-
-                    // Send the POST request to the API
-                    var response = await httpClient.PostAsync(baseUrl + endpoint, content);
-
-                    // Check if the response is successful (204 No Content)
-                    if (response.IsSuccessStatusCode && response.StatusCode == System.Net.HttpStatusCode.NoContent)
-                    {
-                        MacroDeckLogger.Info(PluginInstance.Main, "Action executed successfully.");
-                    }
-                    else
-                    {
-                        MacroDeckLogger.Trace(PluginInstance.Main, $"Failed to execute action. Status Code: {response.StatusCode}");
-                    }
-                }
-
+                webSocketClient.SendMessage(json);
             }
             catch (Exception ex)
             {
