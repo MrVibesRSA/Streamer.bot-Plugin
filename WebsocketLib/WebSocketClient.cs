@@ -2,12 +2,9 @@
 using SuchByte.MacroDeck.Logging;
 using SuchByte.MacroDeck.Plugins;
 using System;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using WebSocketSharp;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace MrVibes_RSA.StreamerbotPlugin
 {

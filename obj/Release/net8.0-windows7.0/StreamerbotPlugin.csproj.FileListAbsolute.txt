@@ -488,5 +488,4 @@ I:\Github\StreamerbotPlugin\obj\Release\net8.0-windows7.0\refint\Streamer.bot Pl
 I:\Github\StreamerbotPlugin\obj\Release\net8.0-windows7.0\Streamer.bot Plugin.pdb
 I:\Github\StreamerbotPlugin\obj\Release\net8.0-windows7.0\ref\Streamer.bot Plugin.dll
 I:\Github\StreamerbotPlugin\bin\Release\net8.0-windows7.0\Newtonsoft.Json.dll
-I:\Github\StreamerbotPlugin\bin\Release\net8.0-windows7.0\websocket-sharp.dll
 I:\Github\StreamerbotPlugin\obj\Release\net8.0-windows7.0\MrVibesRSA.StreamerbotPlugin.GUI.ErrorMessage.resources
