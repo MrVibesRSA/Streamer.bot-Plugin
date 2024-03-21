@@ -5,10 +5,10 @@
   },
   "projects": {
     "I:\\Github\\StreamerbotPlugin\\StreamerbotPlugin.csproj": {
-      "version": "1.1.0",
+      "version": "1.0.1",
       "restore": {
         "projectUniqueName": "I:\\Github\\StreamerbotPlugin\\StreamerbotPlugin.csproj",
-        "projectName": "Streamer.bot Plugin",
+        "projectName": "MrVibesRSA.StreamerbotPlugin",
         "projectPath": "I:\\Github\\StreamerbotPlugin\\StreamerbotPlugin.csproj",
         "packagesPath": "C:\\Users\\drkdg\\.nuget\\packages\\",
         "outputPath": "I:\\Github\\StreamerbotPlugin\\obj\\",
@@ -76,7 +76,7 @@
               "privateAssets": "none"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.201/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.202/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

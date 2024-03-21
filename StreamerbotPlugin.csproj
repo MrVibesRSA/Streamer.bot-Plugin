@@ -3,15 +3,14 @@
   <PropertyGroup>
     <TargetFramework>net8.0-windows7.0</TargetFramework>
     <Authors>MrVibes_RSA</Authors>
-    <Version>1.1.0</Version>
-    <Title></Title>
+    <Version>1.0.1</Version>
+    <Title>Streamer.bot Plugin</Title>
     <UseWindowsForms>true</UseWindowsForms>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <PackageId></PackageId>
+    <PackageId>MrVibesRSA.StreamerbotPlugin</PackageId>
     <Product></Product>
     <AssemblyName>Streamer.bot Plugin</AssemblyName>
     <RootNamespace>MrVibesRSA.StreamerbotPlugin</RootNamespace>
-    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

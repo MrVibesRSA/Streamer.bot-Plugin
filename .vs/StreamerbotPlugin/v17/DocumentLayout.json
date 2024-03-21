@@ -3,20 +3,24 @@
   "WorkspaceRootPath": "I:\\Github\\StreamerbotPlugin\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{D9FCAE34-6E71-411E-9B48-6048FD9A3D75}|StreamerbotPlugin.csproj|i:\\github\\streamerbotplugin\\gui\\pluginconfig.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D9FCAE34-6E71-411E-9B48-6048FD9A3D75}|StreamerbotPlugin.csproj|solutionrelative:gui\\pluginconfig.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{D9FCAE34-6E71-411E-9B48-6048FD9A3D75}|StreamerbotPlugin.csproj|i:\\github\\streamerbotplugin\\streamerbotplugin.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{D9FCAE34-6E71-411E-9B48-6048FD9A3D75}|StreamerbotPlugin.csproj|solutionrelative:streamerbotplugin.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D9FCAE34-6E71-411E-9B48-6048FD9A3D75}|StreamerbotPlugin.csproj|i:\\github\\streamerbotplugin\\gui\\pluginconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{D9FCAE34-6E71-411E-9B48-6048FD9A3D75}|StreamerbotPlugin.csproj|solutionrelative:gui\\pluginconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+      "AbsoluteMoniker": "D:0:0:{D9FCAE34-6E71-411E-9B48-6048FD9A3D75}|StreamerbotPlugin.csproj|i:\\github\\streamerbotplugin\\streamerbotplugin.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|",
+      "RelativeMoniker": "D:0:0:{D9FCAE34-6E71-411E-9B48-6048FD9A3D75}|StreamerbotPlugin.csproj|solutionrelative:streamerbotplugin.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D9FCAE34-6E71-411E-9B48-6048FD9A3D75}|StreamerbotPlugin.csproj|i:\\github\\streamerbotplugin\\gui\\pluginconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{D9FCAE34-6E71-411E-9B48-6048FD9A3D75}|StreamerbotPlugin.csproj|I:\\Github\\StreamerbotPlugin\\gui\\pluginconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D9FCAE34-6E71-411E-9B48-6048FD9A3D75}|StreamerbotPlugin.csproj|solutionrelative:gui\\pluginconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{D9FCAE34-6E71-411E-9B48-6048FD9A3D75}|StreamerbotPlugin.csproj|I:\\Github\\StreamerbotPlugin\\main.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D9FCAE34-6E71-411E-9B48-6048FD9A3D75}|StreamerbotPlugin.csproj|solutionrelative:main.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D9FCAE34-6E71-411E-9B48-6048FD9A3D75}|StreamerbotPlugin.csproj|I:\\Github\\StreamerbotPlugin\\gui\\pluginconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{D9FCAE34-6E71-411E-9B48-6048FD9A3D75}|StreamerbotPlugin.csproj|solutionrelative:gui\\pluginconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     }
   ],
   "DocumentGroupContainers": [
@@ -31,27 +35,38 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "PluginConfig.Designer.cs",
-              "DocumentMoniker": "I:\\Github\\StreamerbotPlugin\\GUI\\PluginConfig.Designer.cs",
-              "RelativeDocumentMoniker": "GUI\\PluginConfig.Designer.cs",
-              "ToolTip": "I:\\Github\\StreamerbotPlugin\\GUI\\PluginConfig.Designer.cs",
-              "RelativeToolTip": "GUI\\PluginConfig.Designer.cs",
-              "ViewState": "AQIAAHQBAAAAAAAAAAAAADEAAAAvAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-20T09:28:41.524Z",
+              "Title": "StreamerbotPlugin",
+              "DocumentMoniker": "I:\\Github\\StreamerbotPlugin\\StreamerbotPlugin.csproj",
+              "RelativeDocumentMoniker": "StreamerbotPlugin.csproj",
+              "ToolTip": "I:\\Github\\StreamerbotPlugin\\StreamerbotPlugin.csproj",
+              "RelativeToolTip": "StreamerbotPlugin.csproj",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA4AAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2024-03-21T10:07:48.706Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "StreamerbotPlugin",
+              "DocumentMoniker": "I:\\Github\\StreamerbotPlugin\\StreamerbotPlugin.csproj",
+              "RelativeDocumentMoniker": "StreamerbotPlugin.csproj",
+              "ToolTip": "I:\\Github\\StreamerbotPlugin\\StreamerbotPlugin.csproj",
+              "RelativeToolTip": "StreamerbotPlugin.csproj",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2024-03-21T09:16:45.025Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "PluginConfig.cs [Design]",
               "DocumentMoniker": "I:\\Github\\StreamerbotPlugin\\GUI\\PluginConfig.cs",
               "RelativeDocumentMoniker": "GUI\\PluginConfig.cs",
               "ToolTip": "I:\\Github\\StreamerbotPlugin\\GUI\\PluginConfig.cs [Design]",
               "RelativeToolTip": "GUI\\PluginConfig.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-20T09:25:00.715Z",
-              "EditorCaption": " [Design]"
+              "WhenOpened": "2024-03-20T09:25:00.715Z"
             },
             {
               "$type": "Document",
@@ -61,7 +76,7 @@
               "RelativeDocumentMoniker": "Main.cs",
               "ToolTip": "I:\\Github\\StreamerbotPlugin\\Main.cs",
               "RelativeToolTip": "Main.cs",
-              "ViewState": "AQIAAJEAAAAAAAAAAAAlwDwAAAA1AAAA",
+              "ViewState": "AQIAAKIAAAAAAAAAAAAAALAAAAAFAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-03-19T23:37:49.94Z"
             },
@@ -73,10 +88,9 @@
               "RelativeDocumentMoniker": "GUI\\PluginConfig.cs",
               "ToolTip": "I:\\Github\\StreamerbotPlugin\\GUI\\PluginConfig.cs",
               "RelativeToolTip": "GUI\\PluginConfig.cs",
-              "ViewState": "AQIAABIAAAAAAAAAAAAAAO4AAAAdAAAA",
+              "ViewState": "AQIAAJwAAAAAAAAAAAAAAA8AAAAEAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-19T23:28:05.593Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-03-19T23:28:05.593Z"
             }
           ]
         }
