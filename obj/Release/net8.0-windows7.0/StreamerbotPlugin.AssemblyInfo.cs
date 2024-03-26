@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MrVibes_RSA")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.1.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.1+2358c5215c3ff5ad81bd3fcbcdee921b7500ac3f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.1")]
 [assembly: System.Reflection.AssemblyProductAttribute("Streamer.bot Plugin")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Streamer.bot Plugin")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.1.0")]
