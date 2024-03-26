@@ -6,7 +6,6 @@
     <Version>1.0.1</Version>
     <Title>Streamer.bot Plugin</Title>
     <UseWindowsForms>true</UseWindowsForms>
-    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <PackageId>MrVibesRSA.StreamerbotPlugin</PackageId>
     <Product></Product>
     <AssemblyName>Streamer.bot Plugin</AssemblyName>
@@ -14,11 +13,11 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <NoWarn>1701;1702; NU1701;MSB3270</NoWarn>
+    <NoWarn>1701;1702;MSB3270</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <NoWarn>1701;1702; NU1701;MSB3270</NoWarn>
+    <NoWarn>1701;1702;MSB3270</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

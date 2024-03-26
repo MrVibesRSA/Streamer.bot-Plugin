@@ -1,104 +1,12 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "I:\\Github\\StreamerbotPlugin\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{D9FCAE34-6E71-411E-9B48-6048FD9A3D75}|StreamerbotPlugin.csproj|i:\\github\\streamerbotplugin\\obj\\release\\net8.0-windows7.0\\streamerbotplugin.assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D9FCAE34-6E71-411E-9B48-6048FD9A3D75}|StreamerbotPlugin.csproj|solutionrelative:obj\\release\\net8.0-windows7.0\\streamerbotplugin.assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D9FCAE34-6E71-411E-9B48-6048FD9A3D75}|StreamerbotPlugin.csproj|i:\\github\\streamerbotplugin\\websocketlib\\websocketframe.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D9FCAE34-6E71-411E-9B48-6048FD9A3D75}|StreamerbotPlugin.csproj|solutionrelative:websocketlib\\websocketframe.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D9FCAE34-6E71-411E-9B48-6048FD9A3D75}|StreamerbotPlugin.csproj|i:\\github\\streamerbotplugin\\websocketlib\\websocketclient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D9FCAE34-6E71-411E-9B48-6048FD9A3D75}|StreamerbotPlugin.csproj|solutionrelative:websocketlib\\websocketclient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D9FCAE34-6E71-411E-9B48-6048FD9A3D75}|StreamerbotPlugin.csproj|i:\\github\\streamerbotplugin\\main.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D9FCAE34-6E71-411E-9B48-6048FD9A3D75}|StreamerbotPlugin.csproj|solutionrelative:main.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D9FCAE34-6E71-411E-9B48-6048FD9A3D75}|StreamerbotPlugin.csproj|I:\\Github\\StreamerbotPlugin\\gui\\pluginconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D9FCAE34-6E71-411E-9B48-6048FD9A3D75}|StreamerbotPlugin.csproj|solutionrelative:gui\\pluginconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    }
-  ],
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": [
-        {
-          "DockedWidth": 200,
-          "SelectedChildIndex": 0,
-          "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "StreamerbotPlugin.AssemblyInfo.cs",
-              "DocumentMoniker": "I:\\Github\\StreamerbotPlugin\\obj\\Release\\net8.0-windows7.0\\StreamerbotPlugin.AssemblyInfo.cs",
-              "RelativeDocumentMoniker": "obj\\Release\\net8.0-windows7.0\\StreamerbotPlugin.AssemblyInfo.cs",
-              "ToolTip": "I:\\Github\\StreamerbotPlugin\\obj\\Release\\net8.0-windows7.0\\StreamerbotPlugin.AssemblyInfo.cs",
-              "RelativeToolTip": "obj\\Release\\net8.0-windows7.0\\StreamerbotPlugin.AssemblyInfo.cs",
-              "ViewState": "AQIAAAMAAAAAAAAAAAAAABkAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-21T10:52:00.702Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "WebSocketFrame.cs",
-              "DocumentMoniker": "I:\\Github\\StreamerbotPlugin\\WebsocketLib\\WebSocketFrame.cs",
-              "RelativeDocumentMoniker": "WebsocketLib\\WebSocketFrame.cs",
-              "ToolTip": "I:\\Github\\StreamerbotPlugin\\WebsocketLib\\WebSocketFrame.cs",
-              "RelativeToolTip": "WebsocketLib\\WebSocketFrame.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-21T10:48:08.573Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "WebSocketClient.cs",
-              "DocumentMoniker": "I:\\Github\\StreamerbotPlugin\\WebsocketLib\\WebSocketClient.cs",
-              "RelativeDocumentMoniker": "WebsocketLib\\WebSocketClient.cs",
-              "ToolTip": "I:\\Github\\StreamerbotPlugin\\WebsocketLib\\WebSocketClient.cs",
-              "RelativeToolTip": "WebsocketLib\\WebSocketClient.cs",
-              "ViewState": "AQIAAAMAAAAAAAAAAAAAAAoBAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-21T10:47:19.357Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Main.cs",
-              "DocumentMoniker": "I:\\Github\\StreamerbotPlugin\\Main.cs",
-              "RelativeDocumentMoniker": "Main.cs",
-              "ToolTip": "I:\\Github\\StreamerbotPlugin\\Main.cs",
-              "RelativeToolTip": "Main.cs",
-              "ViewState": "AQIAAIcAAAAAAAAAAAAAALAAAAAFAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-19T23:37:49.94Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "PluginConfig.cs",
-              "DocumentMoniker": "I:\\Github\\StreamerbotPlugin\\GUI\\PluginConfig.cs",
-              "RelativeDocumentMoniker": "GUI\\PluginConfig.cs",
-              "ToolTip": "I:\\Github\\StreamerbotPlugin\\GUI\\PluginConfig.cs",
-              "RelativeToolTip": "GUI\\PluginConfig.cs",
-              "ViewState": "AQIAAJwAAAAAAAAAAAAAAA8AAAAEAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-19T23:28:05.593Z"
-            }
-          ]
-        }
-      ]
+      "DocumentGroups": []
     }
   ]
 }

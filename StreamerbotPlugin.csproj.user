@@ -12,4 +12,18 @@
       <SubType>UserControl</SubType>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="GUI\ErrorMessage.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="GUI\PluginConfig.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="GUI\StreamerBotActionConfigurator.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>
