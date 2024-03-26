@@ -3,15 +3,7 @@
   "WorkspaceRootPath": "I:\\Github\\StreamerbotPlugin\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|I:\\Github\\StreamerbotPlugin\\obj\\Release\\net8.0-windows7.0\\StreamerbotPlugin.AssemblyInfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:obj\\Release\\net8.0-windows7.0\\StreamerbotPlugin.AssemblyInfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D9FCAE34-6E71-411E-9B48-6048FD9A3D75}|StreamerbotPlugin.csproj|i:\\github\\streamerbotplugin\\properties\\resources.resx||{FF4D6ACA-9352-4A5F-821E-F4D6EBDCAB11}",
-      "RelativeMoniker": "D:0:0:{D9FCAE34-6E71-411E-9B48-6048FD9A3D75}|StreamerbotPlugin.csproj|solutionrelative:properties\\resources.resx||{FF4D6ACA-9352-4A5F-821E-F4D6EBDCAB11}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D9FCAE34-6E71-411E-9B48-6048FD9A3D75}|StreamerbotPlugin.csproj|i:\\github\\streamerbotplugin\\streamerbotplugin.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|",
+      "AbsoluteMoniker": "D:0:0:{D9FCAE34-6E71-411E-9B48-6048FD9A3D75}|StreamerbotPlugin.csproj|I:\\Github\\StreamerbotPlugin\\streamerbotplugin.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|",
       "RelativeMoniker": "D:0:0:{D9FCAE34-6E71-411E-9B48-6048FD9A3D75}|StreamerbotPlugin.csproj|solutionrelative:streamerbotplugin.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
     }
   ],
@@ -27,31 +19,6 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "StreamerbotPlugin.AssemblyInfo.cs",
-              "DocumentMoniker": "I:\\Github\\StreamerbotPlugin\\obj\\Release\\net8.0-windows7.0\\StreamerbotPlugin.AssemblyInfo.cs",
-              "RelativeDocumentMoniker": "obj\\Release\\net8.0-windows7.0\\StreamerbotPlugin.AssemblyInfo.cs",
-              "ToolTip": "I:\\Github\\StreamerbotPlugin\\obj\\Release\\net8.0-windows7.0\\StreamerbotPlugin.AssemblyInfo.cs",
-              "RelativeToolTip": "obj\\Release\\net8.0-windows7.0\\StreamerbotPlugin.AssemblyInfo.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABAAAAB1AAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-26T02:47:43.177Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Resources.resx",
-              "DocumentMoniker": "I:\\Github\\StreamerbotPlugin\\Properties\\Resources.resx",
-              "RelativeDocumentMoniker": "Properties\\Resources.resx",
-              "ToolTip": "I:\\Github\\StreamerbotPlugin\\Properties\\Resources.resx",
-              "RelativeToolTip": "Properties\\Resources.resx",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001005|",
-              "WhenOpened": "2024-03-26T02:46:32.261Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
               "Title": "StreamerbotPlugin",
               "DocumentMoniker": "I:\\Github\\StreamerbotPlugin\\StreamerbotPlugin.csproj",
               "RelativeDocumentMoniker": "StreamerbotPlugin.csproj",
