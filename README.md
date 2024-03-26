@@ -1,6 +1,9 @@
 # Streamer.bot Plugin
 Streamer.bot plugin for Macro Deck.
 
+[Download MrVibesRSA.StreamerbotPluging.zip](Download/MrVibesRSA.StreamerbotPluging.zip)
+
+
 ---
 
 ## Connecting Macro Deck to Streamer Bot WebSocket Server
