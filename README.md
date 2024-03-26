@@ -1,7 +1,7 @@
 # Streamer.bot Plugin
 Streamer.bot plugin for Macro Deck.
 
-[Download MrVibesRSA.StreamerbotPluging.zip](https://github.com/MrVibesRSA/Open-Hardware-Monitor-Plugin/releases/download/v1.0.1/MrVibesRSA.StreamerbotPluging.zip)
+[Download MrVibesRSA.StreamerbotPluging.zip](https://github.com/MrVibesRSA/Streamer.bot-Plugin/releases/download/v1.0.1/MrVibesRSA.StreamerbotPluging.zip)
 
 
 ---
