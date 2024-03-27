@@ -1,4 +1,7 @@
-﻿using SuchByte.MacroDeck.Variables;
+﻿using Microsoft.VisualBasic;
+using SuchByte.MacroDeck.Variables;
+using System;
+using System.Reflection.Metadata;
 
 namespace MrVibes_RSA.StreamerbotPlugin.Models
 {
@@ -6,25 +9,21 @@ namespace MrVibes_RSA.StreamerbotPlugin.Models
     {
         public static VariableType GetVariableType(object value)
         {
-            if (value is int)
+
+            if (int.TryParse(value.ToString(), out _))
             {
                 return VariableType.Integer;
             }
-            else if (value is bool)
-            {
-                return VariableType.Bool;
-            }
-            else if (value is float || value is double)
+            else if (float.TryParse(value.ToString(), out _))
             {
                 return VariableType.Float;
             }
-            else if (value is string)
+            else if (bool.TryParse(value.ToString(), out _))
             {
-                return VariableType.String;
+                return VariableType.Bool;
             }
             else
             {
-                // Handle other types as needed
                 return VariableType.String; // Default to String if type is unknown
             }
         }

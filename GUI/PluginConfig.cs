@@ -170,6 +170,7 @@ namespace MrVibes_RSA.StreamerbotPlugin.GUI
                     // Checkbox is checked
                     selectedVariables.Add(new Tuple<string, string>(variableName, variableValue));
                     VariableType type = VariableTypeHelper.GetVariableType(variableValue);
+
                     VariableManager.SetValue(variableName, variableValue, type, PluginInstance.Main, new string[] { "Gobal Variables" });
                 }
                 else
