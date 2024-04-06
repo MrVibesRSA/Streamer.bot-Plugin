@@ -8,5 +8,5 @@
   "target-plugin-api-version": 40,
   "target-macro-deck-version" : "2.13.1",
   "dll": "Streamer.bot Plugin.dll",
-  "author-discord-userid": "363735104872251392"
+  "author-discord-userid": 363735104872251392
 }
