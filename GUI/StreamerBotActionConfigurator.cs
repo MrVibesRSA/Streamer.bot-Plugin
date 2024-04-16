@@ -6,7 +6,6 @@ using SuchByte.MacroDeck.GUI.CustomControls;
 using SuchByte.MacroDeck.Logging;
 using SuchByte.MacroDeck.Plugins;
 using System;
-using System.Threading.Tasks;
 
 namespace MrVibes_RSA.StreamerbotPlugin.GUI
 {
@@ -64,8 +63,8 @@ namespace MrVibes_RSA.StreamerbotPlugin.GUI
                 foreach (var action in apiResponse.actions)
                 {
                     // Process each action
-                    // MacroDeckLogger.Error(PluginInstance.Main, $"Action Name: {action.name}, Group: {action.group}, Enabled: {action.enabled}, Subactions Count: {action.subactions_count}");
-                    var item = new Models.Action(action.id, action.name);
+                    // MacroDeckLogger.Error(PluginInstance.Main, $"Action Name: {action.name}, Group: {action.group}, Enabled: {action.enabled}, Subaction Count: {action.subaction_count}");
+                    var item = new Models.Action(action.id, action.name, action.group, action.enabled, action.subaction_count);
                     comboBox_ActionList.Items.Add(item);
                 }
 
@@ -73,9 +72,16 @@ namespace MrVibes_RSA.StreamerbotPlugin.GUI
                 {
                     // Assuming _macroDeckAction.Configuration is a valid JSON string
                     JObject configurationObject = JObject.Parse(_macroDeckAction.Configuration);
+
                     // Further processing with configurationObject...
                     var selected = configurationObject["actionName"]?.ToString();
                     textBox_Arguments.Text = configurationObject["actionArgument"]?.ToString();
+
+                    label_actionId.Text = configurationObject["actionId"]?.ToString();
+                    label_actionName.Text = configurationObject["actionName"]?.ToString();
+                    label_actionGroup.Text = configurationObject["actionGroup"]?.ToString();
+                    label_actionEnabled.Text = configurationObject["actionEnabled"]?.ToString();
+                    label_subactionCount.Text = configurationObject["actionSubactionCount"]?.ToString();
 
                     if (selected == string.Empty)
                     {
@@ -116,6 +122,9 @@ namespace MrVibes_RSA.StreamerbotPlugin.GUI
                 configuration["actionId"] = selectedAction.id; // Save the ID of the selected action
                 configuration["actionName"] = selectedAction.name; // Save the name of the selected action
                 configuration["actionArgument"] = textBox_Arguments.Text;
+                configuration["actionGroup"] = selectedAction.group;
+                configuration["actionEnabled"] = selectedAction.enabled;
+                configuration["actionSubactionCount"] = selectedAction.subaction_count;
 
                 if (configuration["actionArgument"].ToString() == string.Empty)
                 {
@@ -143,6 +152,30 @@ namespace MrVibes_RSA.StreamerbotPlugin.GUI
             {
                 MacroDeckLogger.Trace(PluginInstance.Main, "Failed to refresh actions: " + ex.Message);
             }
+        }
+
+        private void SaveDate()
+        {
+            Models.Action selectedAction = (Models.Action)comboBox_ActionList.SelectedItem;
+
+            JObject configuration = new JObject();
+            configuration["actionId"] = selectedAction.id; // Save the ID of the selected action
+            configuration["actionName"] = selectedAction.name; // Save the name of the selected action
+            configuration["actionArgument"] = textBox_Arguments.Text;
+            configuration["actionGroup"] = selectedAction.group;
+            configuration["actionEnabled"] = selectedAction.enabled;
+            configuration["actionSubaction_count"] = selectedAction.subaction_count;
+        }
+
+        private void comboBox_ActionList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Models.Action selectedAction = (Models.Action)comboBox_ActionList.SelectedItem;
+            label_actionId.Text = selectedAction.id.ToString();
+            label_actionName.Text = selectedAction.name.ToString();
+            label_actionGroup.Text = selectedAction.group.ToString();
+            label_actionEnabled.Text = selectedAction.enabled.ToString();
+            label_subactionCount.Text = selectedAction.subaction_count.ToString();
+            SaveDate();
         }
     }
 }

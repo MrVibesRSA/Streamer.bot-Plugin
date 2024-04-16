@@ -3,9 +3,9 @@ using MrVibes_RSA.StreamerbotPlugin.GUI;
 using MrVibes_RSA.StreamerbotPlugin.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SuchByte.MacroDeck.DataTypes.Updater;
-using SuchByte.MacroDeck.GUI.CustomControls;
+using SuchByte.MacroDeck;
 using SuchByte.MacroDeck.GUI;
+using SuchByte.MacroDeck.GUI.CustomControls;
 using SuchByte.MacroDeck.Logging;
 using SuchByte.MacroDeck.Plugins;
 using SuchByte.MacroDeck.Variables;
@@ -13,8 +13,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using Microsoft.VisualBasic.Logging;
-using SuchByte.MacroDeck;
 using WebSocketSharp;
 
 namespace MrVibes_RSA.StreamerbotPlugin

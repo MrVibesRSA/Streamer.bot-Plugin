@@ -8,6 +8,7 @@ using SuchByte.MacroDeck.Plugins;
 using SuchByte.MacroDeck.Variables;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Windows.Forms;
 using WebSocketSharp;
 
@@ -36,9 +37,18 @@ namespace MrVibes_RSA.StreamerbotPlugin.GUI
             toolTip.SetToolTip(btn_Connect, "Connect to Streamer.bot's Websocked Server.");
             toolTip.SetToolTip(buttonPrimary1, "Copy Streamer.bot action import code");
 
+            string username = "MrVibesRSA";
+            string repository = "Streamer.bot-Actions";
+            string filePath = "Update-Macro-Deck-veriables/Text/Import-Code.txt";
+            string branch = "main"; // or whichever branch your file is in
+
+            string apiUrl = $"https://raw.githubusercontent.com/{username}/{repository}/{branch}/{filePath}";
+
+            string fileContent = GetFileContent(apiUrl);
 
             //Import Code for streamer.bot
-            roundedTextBox3.Text = "U0JBRR+LCAAAAAAABADNV1lv4kgQfl9p/oPFvo6j9gU40jwEJxiThCwQbGAZjbrbje2kfYwPwBnNf9/2AeEI0Ww0D2MJCddXXVX9Vbmr+senvziusSJx4oVB45KTPpcCz4/CODWPxb4XeH7mv8ob4EK8kBo1SlLIZD+KF/YaQJ8UKjoNEaQmjD2IKEm4y0tuTALbImgc4meS3pMkgQ4p5JPIhikpFjDFyiozBLPUDePC1H1seogk30bjqx36GntDuGDh7ACbJDj2orQG982Foyy4wjUSZJQW0M9qFyyC/V3AUi1hkn8rCbeFStizC9tKSxKbiABekpdLXhZEhVcJsNk/FbWV9rKJoLD1Xy77npGM1L735SQoOCpspnFGDpANpplNunHo97wkDeP8DaXfRXlpzInDLCqsbfhJ6lEv9Y4UIF3DPGFUMqUlpMlBKDEM7NDfkXyC4zDAWRyTIH0LTWPPcVhi92k/or5Kfr3FQb3x/fhKhaiojiQtKQXHYJU8iMWW1ISIh0uxxctYEPm20Ea8IDUFVQVNwSbyid00jwqHLaAeI2dT+JrGZFtRX/fRn68vXw9oPq3At6jY5v5/J7pcfeZj2eExWRKWLExO4ihh7XKxsDyW8XWyWNx7OA6TcJleDG4eF4tuzCJbh/FzU14sVjL7RiUgCepi4Sc4jKmHLmxKG4cmvx77R3lKtNAud2hPBxHysTOR6Iutm+nDGtxeD6O1bfUTaN07M3HjYuneGQodY2wpTKZQhreuh2Ef99gJotMnQ++vkLh2RlOXziQTzMdOVOCE2dKGz6u7vKMgycwNXXChJTOb6vN83AmQaL4YukuxPxloznMfS6Oc2Q8M3U6Q2HdRd+5in7ozf0Mf/W46f0ycu7zt/DPuMLn9YuX9AOmqN7PWGSrwcd++o6PVpLZzqz2XcWqTwXCsKRMc0N58OupgH4eGX/vQlGxmCdTw1g6LEZz1Pa5tTQeAybN53ql9b6zZtB/NGF9zc+6inkkf8iu25yvV0Lv5XBqgfV/zqW2xNcJHY31dbySGrgq2dj6O28ek5LW0a1Hf0Bx3Lm5WM7+bmH6X+e2y/JkPxf7v6ACw9QALdmTrTmgEA28qbv0a0e2wyCWtYqxyOoH6xNnaM3qvfBm64iKLYbpKcd7JkDR0WG5dHAwdW6QAalceFvvL3VqnrJM+9k1gT/uZoRfxD+hDWT9UrXzuaklHUj+dTZktVjvGTfT4CGRnVzu9To6kDqupjWL0zJdKtstZhIIRxUFnhfQugJaaHeX0OxbVzLgGTl/rt4iw9oh4ph6mAjaeQmfK9N7gtMpRoRMIqvFU5GEXv4Z91Z3rA/ZdHe5hzmKajTsitG4cUzS9iag+QdEELEbH0K6q301ZH9O51X9B4iBmNbJnb3RbxH+rRwyTo5q/nOkI2Jcdu9cX5mVNFJxGBa9fTg/5mODQjzxK3ugl9fFGYT5OYfxWtyk1ErgiI5JkNH0Mt43zPd0DrdPzsmotTQiWIsYS34It1lpYp+HbttjmkQgQEpYQIAWeLF0Tz3GLOMHFSceq245aPMfYtl8fzRQl9n5TYgc32RRT3kE7+vx+46XlANNQADjZgQ835hY/RavJ4By3FXHCUm2rYrPFI6jIvIyWNq+qCuEFACRZkFuKIn+IOLZe/P28yR/g7Uv5lGNZwrF+nRT92ub8umGnIXcPWRvlrgl+5irlkw3jkFZz8d8AtIF2SnU9ncpslJHUFq/KGPMykCQetiXC/gGsoJasiAR9kMyzRXj6RfwaleADVA7CtJxxz/NzhhhVlEBbkGy+iYDEyy27ybelVpPHorhU7HYLLZXmn0KM8AFiHgKac9VdIOFSF6ZcUhyB3NpLXW7RSNA3pwQXDSailItgUuixSB2Xc9m8d/FOyXW7bSCfKzkAiSICVeWb8rLNmG0XBx+7HwkywqgJBUVpkT+FWfHXh3C9cFVN7od3GUphlBB7D9/CtcGtfnXzOzDBlvs+OxMPhev6SEjHJF7VN6FTUKMeu0Edgqnnb/XLa+2nv37+B3w4lr/mDwAA";
+            roundedTextBox3.Text = fileContent; 
+
             // Assuming WebSocketClient has a property named State indicating the connection state
             btn_Connect.Text = WebSocketClient.IsConnected ? "Disconnect" : "Connect";
 
@@ -52,12 +62,22 @@ namespace MrVibes_RSA.StreamerbotPlugin.GUI
             LoadCheckboxState();
         }
 
+        static string GetFileContent(string url)
+        {
+            using (var client = new HttpClient())
+            {
+                HttpResponseMessage response = client.GetAsync(url).Result; // Using .Result to synchronously wait for the response
+                response.EnsureSuccessStatusCode();
+
+                string fileContent = response.Content.ReadAsStringAsync().Result; // Using .Result to synchronously wait for the content
+
+                return fileContent;
+            }
+        }
+
         private void HandleUpdateVariableList(object sender, EventArgs e)
         {
             PopulateDataGridView();
-
-           // dataGridView1.Invalidate();
-           // dataGridView1.Update();
         }
 
         private void btn_OK_Click(object sender, EventArgs e)
@@ -268,18 +288,6 @@ namespace MrVibes_RSA.StreamerbotPlugin.GUI
                         int rowIndex = dataGridView1.Rows.Count - 1; // Index of the newly added row
                         var formattedKey = kvp.Key;
 
-                        if (!kvp.Key.StartsWith("sb_global_"))
-                        {
-                            if (kvp.Key.StartsWith("global_"))
-                            {
-                                formattedKey = ("sb_" + kvp.Key);
-                            }
-                            else
-                            {
-                                formattedKey = ("sb_global_" + kvp.Key);
-                            }
-                        }
-
                         // Set the key in the second column (index 1) and value in the third column (index 2)
                         dataGridView1.Rows[rowIndex].Cells[1].Value = formattedKey.ToLower();
                         dataGridView1.Rows[rowIndex].Cells[2].Value = kvp.Value.ToLower();
@@ -326,6 +334,5 @@ namespace MrVibes_RSA.StreamerbotPlugin.GUI
                 System.Windows.Forms.MessageBox.Show("Error opening the link: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
     }
 }

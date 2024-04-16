@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net8.0-windows7.0</TargetFramework>
     <Authors>MrVibes_RSA</Authors>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Title>Streamer.bot Plugin</Title>
     <UseWindowsForms>true</UseWindowsForms>
     <PackageId>MrVibesRSA.StreamerbotPlugin</PackageId>
@@ -12,6 +12,7 @@
     <RootNamespace>MrVibesRSA.StreamerbotPlugin</RootNamespace>
     <PlatformTarget>x64</PlatformTarget>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <Description>Run Streamer.bot actions with the push of a button. </Description>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
