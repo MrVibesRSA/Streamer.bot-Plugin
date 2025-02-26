@@ -1,4 +1,7 @@
 # Streamer.bot Plugin deprecated
+
+you can use yet another streaamer.bot plugin. 
+
 Streamer.bot plugin for Macro Deck.
 
 ---
