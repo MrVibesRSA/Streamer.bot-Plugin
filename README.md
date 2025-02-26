@@ -1,4 +1,4 @@
-# Streamer.bot Plugin
+# Streamer.bot Plugin deprecated
 Streamer.bot plugin for Macro Deck.
 
 ---
