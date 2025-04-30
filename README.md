@@ -1,8 +1,8 @@
-# Streamer.bot Plugin deprecated
-
-you can use yet another streaamer.bot plugin. 
+# Streamer.bot Plugin 
 
 Streamer.bot plugin for Macro Deck.
+[Link to Changelog](#changelog) Updated 29/04/2025
+
 
 ---
 
@@ -32,23 +32,30 @@ Enter the WebSocket server address, port number, and endpoint provided by your S
 
 ## Using Streamer.bot Global Variables in Macro Deck
 
-### Step 1: Getting Streamer.bot's Global Variable to Macro Deck
-
-To do so, first, copy the Streamer.bot action code from the plugin config and paste it into the Streamer.bot import action section. You will now have an action that triggers every time a Global Variable updates.
-
-![Example: Import Code](Images/Import_Code.png)
-
-### Step 2: Using Global Variables in Macro Deck
-
-Once the Global Variable updates, the plugin will catch them in a data grid. If you would like to use the variables in Macro Deck, all you need to do is check them, and they will be available to Macro Deck.
-
-![Example: Globals Data Grid](Images/Globals_Data_Grid.png)
-
 ![Example: Macro Deck Variables](Images/Macro_Deck_Variables.png)
 
 ---
 
+## Changelog {#changelog}
+- **Completely rebuilt the plugin** for easier maintenance and feature addition.
+- **Moved from using WebSocketSharp** to `System.Net.WebSockets`.
+- **Auto-connect on start** functionality added.
+- **Improved error handling** throughout the plugin.
+- **Better handling of global variables** — no extra steps required in Streamer.bot, and now subscribes to global variable updates.
+- **Better connection info retrieval** when connecting to the WebSocket server.
+- **Added authentication** support with Streamer.bot.
+- **Rebuilt the “Connect to Server” UI**:
+  - Added password field.
+  - Added auto-connect on start checkbox.
+- **Rebuilt the “Do Action” UI**:
+  - Streamer.bot actions can now be filtered by action group.
+  - Added search feature with autocomplete in the dropdown.
+- **Expanded the argument field**:
+  - Now supports default string and JSON.
+  - Right-click options for "Format JSON" and "Validate JSON".
+- **Displays more information** about the selected action.
 
+---
 ### Useful Links
 - [Streamer.bot](https://streamer.bot/)
 - [Macro Deck](https://macrodeck.org/)

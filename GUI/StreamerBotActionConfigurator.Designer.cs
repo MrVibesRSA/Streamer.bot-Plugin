@@ -34,298 +34,438 @@ namespace MrVibes_RSA.StreamerbotPlugin.GUI
         /// </summary>
         private void InitializeComponent()
         {
-            comboBox_ActionList = new RoundedComboBox();
-            label1 = new Label();
-            label2 = new Label();
-            textBox_Arguments = new RoundedTextBox();
-            btn_Refresh = new ButtonPrimary();
-            panel1 = new RoundedPanel();
-            label3 = new Label();
+            components = new System.ComponentModel.Container();
+            roundedPanel_Actions = new RoundedPanel();
             roundedPanel1 = new RoundedPanel();
+            textBox = new TextBox();
+            contextMenu_JsonTextBox = new ContextMenuStrip(components);
+            copyToolStripMenuItem = new ToolStripMenuItem();
+            pastToolStripMenuItem = new ToolStripMenuItem();
+            selectAllToolStripMenuItem = new ToolStripMenuItem();
+            toolStripSeparator3 = new ToolStripSeparator();
+            formatJsonToolStripMenuItem = new ToolStripMenuItem();
+            validateJsonToolStripMenuItem = new ToolStripMenuItem();
+            btn_Connect = new ButtonPrimary();
+            label_Argument = new Label();
+            roundedPanel_ActionCombobox = new RoundedPanel();
+            comboBox_ActionList = new System.Windows.Forms.ComboBox();
+            roundedPanel_ActioGroupCombobox = new RoundedPanel();
+            comboBox_ActionGroup = new System.Windows.Forms.ComboBox();
+            label_Action = new Label();
+            label_ActionGroup = new Label();
+            roundedPanel_ActionInfo = new RoundedPanel();
+            label_triggerCount = new Label();
             label_subactionCount = new Label();
             label_actionEnabled = new Label();
-            label_actionGroup = new Label();
-            label_actionName = new Label();
             label_actionId = new Label();
-            label10 = new Label();
-            label9 = new Label();
-            label8 = new Label();
-            label7 = new Label();
-            label5 = new Label();
             label4 = new Label();
-            label6 = new Label();
-            panel1.SuspendLayout();
+            label_Subactioncout_Text = new Label();
+            label_AnctionEnables_Text = new Label();
+            label_AntionID_Text = new Label();
+            label1 = new Label();
+            errorPanel = new RoundedPanel();
+            label2 = new Label();
+            roundedPanel_Actions.SuspendLayout();
             roundedPanel1.SuspendLayout();
+            contextMenu_JsonTextBox.SuspendLayout();
+            roundedPanel_ActionCombobox.SuspendLayout();
+            roundedPanel_ActioGroupCombobox.SuspendLayout();
+            roundedPanel_ActionInfo.SuspendLayout();
+            errorPanel.SuspendLayout();
             SuspendLayout();
             // 
-            // comboBox_ActionList
+            // roundedPanel_Actions
             // 
-            comboBox_ActionList.BackColor = Color.FromArgb(65, 65, 65);
-            comboBox_ActionList.DropDownStyle = ComboBoxStyle.DropDown;
-            comboBox_ActionList.Font = new Font("Tahoma", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            comboBox_ActionList.Icon = null;
-            comboBox_ActionList.Location = new Point(23, 37);
-            comboBox_ActionList.Name = "comboBox_ActionList";
-            comboBox_ActionList.Padding = new Padding(8, 2, 8, 2);
-            comboBox_ActionList.SelectedIndex = -1;
-            comboBox_ActionList.SelectedItem = null;
-            comboBox_ActionList.Size = new Size(662, 28);
-            comboBox_ActionList.TabIndex = 1;
-            comboBox_ActionList.SelectedIndexChanged += comboBox_ActionList_SelectedIndexChanged;
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.BackColor = Color.FromArgb(36, 36, 36);
-            label1.Location = new Point(23, 11);
-            label1.Name = "label1";
-            label1.Size = new Size(117, 23);
-            label1.TabIndex = 2;
-            label1.Text = "Select Action";
-            // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.BackColor = Color.FromArgb(36, 36, 36);
-            label2.Location = new Point(23, 66);
-            label2.Name = "label2";
-            label2.Size = new Size(56, 23);
-            label2.TabIndex = 4;
-            label2.Text = "Value";
-            // 
-            // textBox_Arguments
-            // 
-            textBox_Arguments.BackColor = Color.FromArgb(65, 65, 65);
-            textBox_Arguments.Font = new Font("Tahoma", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            textBox_Arguments.Icon = null;
-            textBox_Arguments.Location = new Point(24, 92);
-            textBox_Arguments.MaxCharacters = 32767;
-            textBox_Arguments.Multiline = false;
-            textBox_Arguments.Name = "textBox_Arguments";
-            textBox_Arguments.Padding = new Padding(8, 5, 8, 5);
-            textBox_Arguments.PasswordChar = false;
-            textBox_Arguments.PlaceHolderColor = Color.Gray;
-            textBox_Arguments.PlaceHolderText = "";
-            textBox_Arguments.ReadOnly = false;
-            textBox_Arguments.ScrollBars = ScrollBars.None;
-            textBox_Arguments.SelectionStart = 0;
-            textBox_Arguments.Size = new Size(742, 27);
-            textBox_Arguments.TabIndex = 7;
-            textBox_Arguments.TextAlignment = HorizontalAlignment.Left;
-            // 
-            // btn_Refresh
-            // 
-            btn_Refresh.BorderRadius = 8;
-            btn_Refresh.FlatStyle = FlatStyle.Flat;
-            btn_Refresh.Font = new Font("Tahoma", 9.75F);
-            btn_Refresh.ForeColor = Color.White;
-            btn_Refresh.HoverColor = Color.Empty;
-            btn_Refresh.Icon = null;
-            btn_Refresh.Location = new Point(691, 37);
-            btn_Refresh.Name = "btn_Refresh";
-            btn_Refresh.Progress = 0;
-            btn_Refresh.ProgressColor = Color.FromArgb(0, 103, 205);
-            btn_Refresh.Size = new Size(75, 23);
-            btn_Refresh.TabIndex = 8;
-            btn_Refresh.Text = "Refresh";
-            btn_Refresh.UseVisualStyleBackColor = true;
-            btn_Refresh.UseWindowsAccentColor = true;
-            btn_Refresh.WriteProgress = true;
-            btn_Refresh.Click += btn_Refresh_Click;
-            // 
-            // panel1
-            // 
-            panel1.BackColor = Color.FromArgb(36, 36, 36);
-            panel1.Controls.Add(textBox_Arguments);
-            panel1.Controls.Add(btn_Refresh);
-            panel1.Controls.Add(label2);
-            panel1.Controls.Add(label3);
-            panel1.Controls.Add(comboBox_ActionList);
-            panel1.Controls.Add(label1);
-            panel1.Location = new Point(33, 56);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(782, 134);
-            panel1.TabIndex = 12;
-            // 
-            // label3
-            // 
-            label3.AutoSize = true;
-            label3.Font = new Font("Tahoma", 9.75F, FontStyle.Italic, GraphicsUnit.Point, 0);
-            label3.Location = new Point(76, 72);
-            label3.Name = "label3";
-            label3.Size = new Size(64, 16);
-            label3.TabIndex = 11;
-            label3.Text = "(Optional)";
+            roundedPanel_Actions.BackColor = Color.FromArgb(36, 36, 36);
+            roundedPanel_Actions.Controls.Add(roundedPanel1);
+            roundedPanel_Actions.Controls.Add(btn_Connect);
+            roundedPanel_Actions.Controls.Add(label_Argument);
+            roundedPanel_Actions.Controls.Add(roundedPanel_ActionCombobox);
+            roundedPanel_Actions.Controls.Add(roundedPanel_ActioGroupCombobox);
+            roundedPanel_Actions.Controls.Add(label_Action);
+            roundedPanel_Actions.Controls.Add(label_ActionGroup);
+            roundedPanel_Actions.Location = new Point(18, 13);
+            roundedPanel_Actions.Name = "roundedPanel_Actions";
+            roundedPanel_Actions.Size = new Size(820, 293);
+            roundedPanel_Actions.TabIndex = 18;
             // 
             // roundedPanel1
             // 
-            roundedPanel1.BackColor = Color.FromArgb(36, 36, 36);
-            roundedPanel1.Controls.Add(label_subactionCount);
-            roundedPanel1.Controls.Add(label_actionEnabled);
-            roundedPanel1.Controls.Add(label_actionGroup);
-            roundedPanel1.Controls.Add(label_actionName);
-            roundedPanel1.Controls.Add(label_actionId);
-            roundedPanel1.Controls.Add(label10);
-            roundedPanel1.Controls.Add(label9);
-            roundedPanel1.Controls.Add(label8);
-            roundedPanel1.Controls.Add(label7);
-            roundedPanel1.Controls.Add(label5);
-            roundedPanel1.Controls.Add(label4);
-            roundedPanel1.Controls.Add(label6);
-            roundedPanel1.Location = new Point(33, 198);
+            roundedPanel1.BackColor = Color.FromArgb(65, 65, 65);
+            roundedPanel1.Controls.Add(textBox);
+            roundedPanel1.ForeColor = Color.Gainsboro;
+            roundedPanel1.Location = new Point(20, 83);
             roundedPanel1.Name = "roundedPanel1";
-            roundedPanel1.Size = new Size(782, 140);
-            roundedPanel1.TabIndex = 13;
+            roundedPanel1.Size = new Size(781, 198);
+            roundedPanel1.TabIndex = 24;
+            // 
+            // textBox
+            // 
+            textBox.AcceptsReturn = true;
+            textBox.AcceptsTab = true;
+            textBox.BackColor = Color.FromArgb(65, 65, 65);
+            textBox.BorderStyle = BorderStyle.None;
+            textBox.ContextMenuStrip = contextMenu_JsonTextBox;
+            textBox.Font = new Font("Tahoma", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            textBox.ForeColor = Color.Gainsboro;
+            textBox.Location = new Point(6, 5);
+            textBox.Multiline = true;
+            textBox.Name = "textBox";
+            textBox.PlaceholderText = "*Arguments are passed to Streamer.bot as string and can be used using the %value% variable.\n   • Example 1: #002564 (plain text)\n   • Example 2: { \"json\":  \"format\"}";
+            textBox.ScrollBars = ScrollBars.Both;
+            textBox.Size = new Size(794, 212);
+            textBox.TabIndex = 20;
+            textBox.WordWrap = false;
+            // 
+            // contextMenu_JsonTextBox
+            // 
+            contextMenu_JsonTextBox.Items.AddRange(new ToolStripItem[] { copyToolStripMenuItem, pastToolStripMenuItem, selectAllToolStripMenuItem, toolStripSeparator3, formatJsonToolStripMenuItem, validateJsonToolStripMenuItem });
+            contextMenu_JsonTextBox.Name = "contextMenu_JsonTextBox";
+            contextMenu_JsonTextBox.Size = new Size(142, 120);
+            // 
+            // copyToolStripMenuItem
+            // 
+            copyToolStripMenuItem.Name = "copyToolStripMenuItem";
+            copyToolStripMenuItem.Size = new Size(141, 22);
+            copyToolStripMenuItem.Text = "Copy";
+            copyToolStripMenuItem.Click += copyToolStripMenuItem_Click;
+            // 
+            // pastToolStripMenuItem
+            // 
+            pastToolStripMenuItem.Name = "pastToolStripMenuItem";
+            pastToolStripMenuItem.Size = new Size(141, 22);
+            pastToolStripMenuItem.Text = "Past";
+            pastToolStripMenuItem.Click += pastToolStripMenuItem_Click;
+            // 
+            // selectAllToolStripMenuItem
+            // 
+            selectAllToolStripMenuItem.Name = "selectAllToolStripMenuItem";
+            selectAllToolStripMenuItem.Size = new Size(141, 22);
+            selectAllToolStripMenuItem.Text = "Select All";
+            selectAllToolStripMenuItem.Click += selectAllToolStripMenuItem_Click;
+            // 
+            // toolStripSeparator3
+            // 
+            toolStripSeparator3.Name = "toolStripSeparator3";
+            toolStripSeparator3.Size = new Size(138, 6);
+            // 
+            // formatJsonToolStripMenuItem
+            // 
+            formatJsonToolStripMenuItem.Name = "formatJsonToolStripMenuItem";
+            formatJsonToolStripMenuItem.Size = new Size(141, 22);
+            formatJsonToolStripMenuItem.Text = "Format Json";
+            formatJsonToolStripMenuItem.Click += formatJsonToolStripMenuItem_Click;
+            // 
+            // validateJsonToolStripMenuItem
+            // 
+            validateJsonToolStripMenuItem.Name = "validateJsonToolStripMenuItem";
+            validateJsonToolStripMenuItem.Size = new Size(141, 22);
+            validateJsonToolStripMenuItem.Text = "Validate Json";
+            validateJsonToolStripMenuItem.Click += validateJsonToolStripMenuItem_Click;
+            // 
+            // btn_Connect
+            // 
+            btn_Connect.BorderRadius = 8;
+            btn_Connect.FlatAppearance.BorderColor = Color.Cyan;
+            btn_Connect.FlatStyle = FlatStyle.Flat;
+            btn_Connect.Font = new Font("Tahoma", 9.75F);
+            btn_Connect.ForeColor = Color.White;
+            btn_Connect.HoverColor = Color.Empty;
+            btn_Connect.Icon = null;
+            btn_Connect.Location = new Point(704, 31);
+            btn_Connect.Name = "btn_Connect";
+            btn_Connect.Progress = 0;
+            btn_Connect.ProgressColor = Color.FromArgb(0, 103, 205);
+            btn_Connect.Size = new Size(97, 25);
+            btn_Connect.TabIndex = 23;
+            btn_Connect.Text = "Refresh";
+            btn_Connect.UseVisualStyleBackColor = false;
+            btn_Connect.UseWindowsAccentColor = true;
+            btn_Connect.WriteProgress = true;
+            // 
+            // label_Argument
+            // 
+            label_Argument.AutoSize = true;
+            label_Argument.BackColor = Color.FromArgb(36, 36, 36);
+            label_Argument.Font = new Font("Tahoma", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label_Argument.ForeColor = Color.Gainsboro;
+            label_Argument.Location = new Point(20, 61);
+            label_Argument.Name = "label_Argument";
+            label_Argument.Size = new Size(89, 19);
+            label_Argument.TabIndex = 22;
+            label_Argument.Text = "Argument*";
+            // 
+            // roundedPanel_ActionCombobox
+            // 
+            roundedPanel_ActionCombobox.BackColor = Color.FromArgb(65, 65, 65);
+            roundedPanel_ActionCombobox.Controls.Add(comboBox_ActionList);
+            roundedPanel_ActionCombobox.Location = new Point(369, 33);
+            roundedPanel_ActionCombobox.Name = "roundedPanel_ActionCombobox";
+            roundedPanel_ActionCombobox.Size = new Size(329, 22);
+            roundedPanel_ActionCombobox.TabIndex = 21;
+            // 
+            // comboBox_ActionList
+            // 
+            comboBox_ActionList.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            comboBox_ActionList.AutoCompleteSource = AutoCompleteSource.ListItems;
+            comboBox_ActionList.BackColor = Color.FromArgb(65, 65, 65);
+            comboBox_ActionList.FlatStyle = FlatStyle.Flat;
+            comboBox_ActionList.Font = new Font("Tahoma", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            comboBox_ActionList.ForeColor = Color.Gainsboro;
+            comboBox_ActionList.FormattingEnabled = true;
+            comboBox_ActionList.Location = new Point(-1, -1);
+            comboBox_ActionList.Margin = new Padding(3, 3, 10, 3);
+            comboBox_ActionList.Name = "comboBox_ActionList";
+            comboBox_ActionList.Size = new Size(330, 24);
+            comboBox_ActionList.TabIndex = 21;
+            comboBox_ActionList.SelectedIndexChanged += comboBox_ActionList_SelectedIndexChanged_1;
+            // 
+            // roundedPanel_ActioGroupCombobox
+            // 
+            roundedPanel_ActioGroupCombobox.BackColor = Color.FromArgb(65, 65, 65);
+            roundedPanel_ActioGroupCombobox.Controls.Add(comboBox_ActionGroup);
+            roundedPanel_ActioGroupCombobox.Location = new Point(20, 33);
+            roundedPanel_ActioGroupCombobox.Name = "roundedPanel_ActioGroupCombobox";
+            roundedPanel_ActioGroupCombobox.Size = new Size(336, 22);
+            roundedPanel_ActioGroupCombobox.TabIndex = 20;
+            // 
+            // comboBox_ActionGroup
+            // 
+            comboBox_ActionGroup.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            comboBox_ActionGroup.AutoCompleteSource = AutoCompleteSource.ListItems;
+            comboBox_ActionGroup.BackColor = Color.FromArgb(65, 65, 65);
+            comboBox_ActionGroup.FlatStyle = FlatStyle.Flat;
+            comboBox_ActionGroup.Font = new Font("Tahoma", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            comboBox_ActionGroup.ForeColor = Color.Gainsboro;
+            comboBox_ActionGroup.FormattingEnabled = true;
+            comboBox_ActionGroup.Location = new Point(-2, -1);
+            comboBox_ActionGroup.Margin = new Padding(3, 3, 10, 3);
+            comboBox_ActionGroup.Name = "comboBox_ActionGroup";
+            comboBox_ActionGroup.Size = new Size(337, 24);
+            comboBox_ActionGroup.TabIndex = 20;
+            comboBox_ActionGroup.SelectedIndexChanged += comboBox_ActionGroup_SelectedIndexChanged_1;
+            // 
+            // label_Action
+            // 
+            label_Action.AutoSize = true;
+            label_Action.BackColor = Color.FromArgb(36, 36, 36);
+            label_Action.Font = new Font("Tahoma", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label_Action.ForeColor = Color.Gainsboro;
+            label_Action.Location = new Point(369, 9);
+            label_Action.Name = "label_Action";
+            label_Action.Size = new Size(54, 19);
+            label_Action.TabIndex = 4;
+            label_Action.Text = "Action";
+            // 
+            // label_ActionGroup
+            // 
+            label_ActionGroup.AutoSize = true;
+            label_ActionGroup.BackColor = Color.FromArgb(36, 36, 36);
+            label_ActionGroup.Font = new Font("Tahoma", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label_ActionGroup.ForeColor = Color.Gainsboro;
+            label_ActionGroup.Location = new Point(20, 9);
+            label_ActionGroup.Name = "label_ActionGroup";
+            label_ActionGroup.Size = new Size(103, 19);
+            label_ActionGroup.TabIndex = 3;
+            label_ActionGroup.Text = "Action Group";
+            // 
+            // roundedPanel_ActionInfo
+            // 
+            roundedPanel_ActionInfo.BackColor = Color.FromArgb(36, 36, 36);
+            roundedPanel_ActionInfo.Controls.Add(label_triggerCount);
+            roundedPanel_ActionInfo.Controls.Add(label_subactionCount);
+            roundedPanel_ActionInfo.Controls.Add(label_actionEnabled);
+            roundedPanel_ActionInfo.Controls.Add(label_actionId);
+            roundedPanel_ActionInfo.Controls.Add(label4);
+            roundedPanel_ActionInfo.Controls.Add(label_Subactioncout_Text);
+            roundedPanel_ActionInfo.Controls.Add(label_AnctionEnables_Text);
+            roundedPanel_ActionInfo.Controls.Add(label_AntionID_Text);
+            roundedPanel_ActionInfo.Controls.Add(label1);
+            roundedPanel_ActionInfo.Location = new Point(17, 312);
+            roundedPanel_ActionInfo.Name = "roundedPanel_ActionInfo";
+            roundedPanel_ActionInfo.Size = new Size(820, 87);
+            roundedPanel_ActionInfo.TabIndex = 19;
+            // 
+            // label_triggerCount
+            // 
+            label_triggerCount.AutoSize = true;
+            label_triggerCount.BackColor = Color.FromArgb(36, 36, 36);
+            label_triggerCount.Font = new Font("Tahoma", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label_triggerCount.ForeColor = Color.Gainsboro;
+            label_triggerCount.Location = new Point(514, 57);
+            label_triggerCount.Name = "label_triggerCount";
+            label_triggerCount.Size = new Size(19, 14);
+            label_triggerCount.TabIndex = 15;
+            label_triggerCount.Text = "   ";
             // 
             // label_subactionCount
             // 
             label_subactionCount.AutoSize = true;
-            label_subactionCount.Font = new Font("Tahoma", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label_subactionCount.Location = new Point(161, 106);
+            label_subactionCount.BackColor = Color.FromArgb(36, 36, 36);
+            label_subactionCount.Font = new Font("Tahoma", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label_subactionCount.ForeColor = Color.Gainsboro;
+            label_subactionCount.Location = new Point(514, 41);
             label_subactionCount.Name = "label_subactionCount";
-            label_subactionCount.Size = new Size(0, 16);
-            label_subactionCount.TabIndex = 21;
+            label_subactionCount.Size = new Size(19, 14);
+            label_subactionCount.TabIndex = 14;
+            label_subactionCount.Text = "   ";
             // 
             // label_actionEnabled
             // 
             label_actionEnabled.AutoSize = true;
-            label_actionEnabled.Font = new Font("Tahoma", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label_actionEnabled.Location = new Point(161, 90);
+            label_actionEnabled.BackColor = Color.FromArgb(36, 36, 36);
+            label_actionEnabled.Font = new Font("Tahoma", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label_actionEnabled.ForeColor = Color.Gainsboro;
+            label_actionEnabled.Location = new Point(124, 57);
             label_actionEnabled.Name = "label_actionEnabled";
-            label_actionEnabled.Size = new Size(0, 16);
-            label_actionEnabled.TabIndex = 20;
-            // 
-            // label_actionGroup
-            // 
-            label_actionGroup.AutoSize = true;
-            label_actionGroup.Font = new Font("Tahoma", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label_actionGroup.Location = new Point(161, 74);
-            label_actionGroup.Name = "label_actionGroup";
-            label_actionGroup.Size = new Size(0, 16);
-            label_actionGroup.TabIndex = 19;
-            // 
-            // label_actionName
-            // 
-            label_actionName.AutoSize = true;
-            label_actionName.Font = new Font("Tahoma", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label_actionName.Location = new Point(161, 58);
-            label_actionName.Name = "label_actionName";
-            label_actionName.Size = new Size(0, 16);
-            label_actionName.TabIndex = 18;
+            label_actionEnabled.Size = new Size(19, 14);
+            label_actionEnabled.TabIndex = 13;
+            label_actionEnabled.Text = "   ";
             // 
             // label_actionId
             // 
             label_actionId.AutoSize = true;
-            label_actionId.Font = new Font("Tahoma", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label_actionId.Location = new Point(161, 42);
+            label_actionId.BackColor = Color.FromArgb(36, 36, 36);
+            label_actionId.Font = new Font("Tahoma", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label_actionId.ForeColor = Color.Gainsboro;
+            label_actionId.Location = new Point(124, 41);
             label_actionId.Name = "label_actionId";
-            label_actionId.Size = new Size(0, 16);
-            label_actionId.TabIndex = 17;
-            // 
-            // label10
-            // 
-            label10.AutoSize = true;
-            label10.Font = new Font("Tahoma", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label10.Location = new Point(24, 106);
-            label10.Name = "label10";
-            label10.Size = new Size(105, 16);
-            label10.TabIndex = 16;
-            label10.Text = "Subaction Count:";
-            // 
-            // label9
-            // 
-            label9.AutoSize = true;
-            label9.Font = new Font("Tahoma", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label9.Location = new Point(23, 90);
-            label9.Name = "label9";
-            label9.Size = new Size(96, 16);
-            label9.TabIndex = 15;
-            label9.Text = "Action Enabled:";
-            // 
-            // label8
-            // 
-            label8.AutoSize = true;
-            label8.Font = new Font("Tahoma", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label8.Location = new Point(24, 74);
-            label8.Name = "label8";
-            label8.Size = new Size(85, 16);
-            label8.TabIndex = 14;
-            label8.Text = "Action Group:";
-            // 
-            // label7
-            // 
-            label7.AutoSize = true;
-            label7.Font = new Font("Tahoma", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label7.Location = new Point(24, 58);
-            label7.Name = "label7";
-            label7.Size = new Size(84, 16);
-            label7.TabIndex = 13;
-            label7.Text = "Action Name:";
-            // 
-            // label5
-            // 
-            label5.AutoSize = true;
-            label5.Font = new Font("Tahoma", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label5.Location = new Point(24, 42);
-            label5.Name = "label5";
-            label5.Size = new Size(63, 16);
-            label5.TabIndex = 12;
-            label5.Text = "Action ID:";
+            label_actionId.Size = new Size(19, 14);
+            label_actionId.TabIndex = 12;
+            label_actionId.Text = "   ";
             // 
             // label4
             // 
             label4.AutoSize = true;
             label4.BackColor = Color.FromArgb(36, 36, 36);
-            label4.Location = new Point(23, 9);
+            label4.Font = new Font("Tahoma", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label4.ForeColor = Color.Gainsboro;
+            label4.Location = new Point(406, 57);
             label4.Name = "label4";
-            label4.Size = new Size(101, 23);
+            label4.Size = new Size(87, 14);
             label4.TabIndex = 11;
-            label4.Text = "Action Info";
+            label4.Text = "Trigger Count:";
             // 
-            // label6
+            // label_Subactioncout_Text
             // 
-            label6.Location = new Point(79, 120);
-            label6.Name = "label6";
-            label6.RightToLeft = RightToLeft.No;
-            label6.Size = new Size(156, 16);
-            label6.TabIndex = 10;
-            label6.TextAlign = ContentAlignment.MiddleCenter;
-            label6.UseMnemonic = false;
+            label_Subactioncout_Text.AutoSize = true;
+            label_Subactioncout_Text.BackColor = Color.FromArgb(36, 36, 36);
+            label_Subactioncout_Text.Font = new Font("Tahoma", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label_Subactioncout_Text.ForeColor = Color.Gainsboro;
+            label_Subactioncout_Text.Location = new Point(406, 41);
+            label_Subactioncout_Text.Name = "label_Subactioncout_Text";
+            label_Subactioncout_Text.Size = new Size(102, 14);
+            label_Subactioncout_Text.TabIndex = 10;
+            label_Subactioncout_Text.Text = "Subaction Count:";
+            // 
+            // label_AnctionEnables_Text
+            // 
+            label_AnctionEnables_Text.AutoSize = true;
+            label_AnctionEnables_Text.BackColor = Color.FromArgb(36, 36, 36);
+            label_AnctionEnables_Text.Font = new Font("Tahoma", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label_AnctionEnables_Text.ForeColor = Color.Gainsboro;
+            label_AnctionEnables_Text.Location = new Point(20, 57);
+            label_AnctionEnables_Text.Name = "label_AnctionEnables_Text";
+            label_AnctionEnables_Text.Size = new Size(93, 14);
+            label_AnctionEnables_Text.TabIndex = 9;
+            label_AnctionEnables_Text.Text = "Action Enabled:";
+            // 
+            // label_AntionID_Text
+            // 
+            label_AntionID_Text.AutoSize = true;
+            label_AntionID_Text.BackColor = Color.FromArgb(36, 36, 36);
+            label_AntionID_Text.Font = new Font("Tahoma", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label_AntionID_Text.ForeColor = Color.Gainsboro;
+            label_AntionID_Text.Location = new Point(20, 41);
+            label_AntionID_Text.Name = "label_AntionID_Text";
+            label_AntionID_Text.Size = new Size(62, 14);
+            label_AntionID_Text.TabIndex = 8;
+            label_AntionID_Text.Text = "Action ID:";
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.BackColor = Color.FromArgb(36, 36, 36);
+            label1.Font = new Font("Tahoma", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label1.ForeColor = Color.Gainsboro;
+            label1.Location = new Point(20, 13);
+            label1.Name = "label1";
+            label1.Size = new Size(88, 19);
+            label1.TabIndex = 4;
+            label1.Text = "Action Info";
+            // 
+            // errorPanel
+            // 
+            errorPanel.BackColor = Color.FromArgb(45, 45, 45);
+            errorPanel.Controls.Add(label2);
+            errorPanel.Location = new Point(3, 7);
+            errorPanel.Name = "errorPanel";
+            errorPanel.Size = new Size(851, 413);
+            errorPanel.TabIndex = 20;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.BackColor = Color.FromArgb(45, 45, 45);
+            label2.ForeColor = Color.Gainsboro;
+            label2.Location = new Point(38, 190);
+            label2.Name = "label2";
+            label2.Size = new Size(751, 23);
+            label2.TabIndex = 0;
+            label2.Text = "\"Failed to populate the action group list. Please check your connection to Streamer.bot.\"";
             // 
             // StreamerBotActionConfigurator
             // 
-            AutoScaleDimensions = new SizeF(10F, 23F);
-            AutoScaleMode = AutoScaleMode.Font;
-            Controls.Add(roundedPanel1);
-            Controls.Add(panel1);
+            AutoScaleDimensions = new SizeF(96F, 96F);
+            Controls.Add(errorPanel);
+            Controls.Add(roundedPanel_ActionInfo);
+            Controls.Add(roundedPanel_Actions);
             Name = "StreamerBotActionConfigurator";
-            panel1.ResumeLayout(false);
-            panel1.PerformLayout();
+            roundedPanel_Actions.ResumeLayout(false);
+            roundedPanel_Actions.PerformLayout();
             roundedPanel1.ResumeLayout(false);
             roundedPanel1.PerformLayout();
+            contextMenu_JsonTextBox.ResumeLayout(false);
+            roundedPanel_ActionCombobox.ResumeLayout(false);
+            roundedPanel_ActioGroupCombobox.ResumeLayout(false);
+            roundedPanel_ActionInfo.ResumeLayout(false);
+            roundedPanel_ActionInfo.PerformLayout();
+            errorPanel.ResumeLayout(false);
+            errorPanel.PerformLayout();
             ResumeLayout(false);
         }
 
         #endregion
-        private RoundedComboBox comboBox_ActionList;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private RoundedTextBox textBox_Arguments;
-        private ButtonPrimary btn_Refresh;
-        private RoundedPanel panel1;
-        private Label label3;
-        private RoundedPanel roundedPanel1;
+
+        private RoundedPanel roundedPanel_Actions;
+        private RoundedPanel roundedPanel_ActionInfo;
+        private Label label_Action;
+        private RoundedPanel roundedPanel_ActionCombobox;
+        private RoundedPanel roundedPanel_ActioGroupCombobox;
+        private Label label_Argument;
+        private ButtonPrimary btn_Connect;
+        private Label label_ActionGroup;
+        private Label label1;
+        private Label label_AntionID_Text;
+        private Label label_AnctionEnables_Text;
         private Label label4;
-        private Label label6;
-        private Label label7;
-        private Label label5;
+        private Label label_Subactioncout_Text;
         private Label label_actionId;
-        private Label label10;
-        private Label label9;
-        private Label label8;
-        private Label label_subactionCount;
         private Label label_actionEnabled;
-        private Label label_actionGroup;
-        private Label label_actionName;
+        private Label label_subactionCount;
+        private Label label_triggerCount;
+        private System.Windows.Forms.ComboBox comboBox_ActionGroup;
+        private System.Windows.Forms.ComboBox comboBox_ActionList;
+        private RoundedPanel roundedPanel1;
+        private TextBox textBox;
+        private ContextMenuStrip contextMenu_JsonTextBox;
+        private ToolStripMenuItem pastToolStripMenuItem;
+        private ToolStripMenuItem copyToolStripMenuItem;
+        private ToolStripMenuItem selectAllToolStripMenuItem;
+        private ToolStripMenuItem formatJsonToolStripMenuItem;
+        private ToolStripMenuItem validateJsonToolStripMenuItem;
+        private ToolStripSeparator toolStripSeparator3;
+        private RoundedPanel errorPanel;
+        private Label label2;
     }
 }

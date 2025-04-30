@@ -1,83 +1,522 @@
-﻿using MrVibes_RSA.StreamerbotPlugin.Models;
-using MrVibesRSA.StreamerbotPlugin.GUI;
-using MrVibesRSA.StreamerbotPlugin.Models;
-using Newtonsoft.Json;
+﻿using MrVibesRSA.StreamerbotPlugin.GUI;
+using MrVibesRSA.StreamerbotPlugin.Services;
+using Newtonsoft.Json.Linq;
 using SuchByte.MacroDeck.GUI.CustomControls;
 using SuchByte.MacroDeck.Logging;
 using SuchByte.MacroDeck.Plugins;
-using SuchByte.MacroDeck.Variables;
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
-using WebSocketSharp;
 
 namespace MrVibes_RSA.StreamerbotPlugin.GUI
 {
     public partial class PluginConfig : DialogForm
     {
-        private List<Tuple<string, string>> selectedVariables = new List<Tuple<string, string>>();
-        private List<CheckboxState> checkboxStates = new List<CheckboxState>();
+        /* 
+         * RECOMMENDED FUTURE IMPROVEMENTS:
+         * 
+         * 1. Add Connection Status Indicator
+         *    - Visual LED indicator showing connection state (connected/disconnected/connecting)
+         *    - Tooltip with detailed connection status
+         *    
+         * 2. Auto-Reconnect Option --- Added busy sorting out bugs.
+         *    - Checkbox "Auto-reconnect" in UI
+         *    - Configuration for retry interval
+         *    - Maximum retry attempts setting
+         *    
+         * 3. Connection Testing Feature
+         *    - Separate "Test Connection" button
+         *    - Validates connection without saving configuration
+         *    - Returns detailed connection diagnostics
+         *    
+         * 4. Configuration Profiles
+         *    - Dropdown to select between multiple saved profiles
+         *    - Add/Delete profile buttons
+         *    - Profile-specific credentials
+         *    
+         * 5. Advanced Settings Section
+         *    - Expandable "Advanced Settings" panel
+         *    - Connection timeout configuration
+         *    - Message timeout settings
+         *    - Debug logging toggle
+         *    
+         * 6. Connection Statistics
+         *    - Uptime/downtime monitoring
+         *    - Message throughput counters
+         *    - Error rate tracking
+         */
+
+        private bool _isFormLoaded = false;
+        private bool _isConfigured;
+
+        public bool IsConfigured
+        {
+            get => _isConfigured;
+            set => _isConfigured = value;
+        }
 
         public PluginConfig()
         {
             InitializeComponent();
-            checkboxColumn.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
-            var address = PluginConfiguration.GetValue(PluginInstance.Main, "Address") ?? "127.0.0..1";
-            var port = PluginConfiguration.GetValue(PluginInstance.Main, "Port") ?? "8080";
-            var endpoint = PluginConfiguration.GetValue(PluginInstance.Main, "Endpoint") ?? "/";
-
-            textBox_Address.Text = address;
-            textBox_Port.Text = port;
-            textBox_Endpoint.Text = endpoint;
-
-            // Set up tooltip for PictureBox
-            ToolTip toolTip = new ToolTip();
-            toolTip.SetToolTip(btn_Connect, "Connect to Streamer.bot's Websocked Server.");
-            toolTip.SetToolTip(buttonPrimary1, "Copy Streamer.bot action import code");
-
-            string username = "MrVibesRSA";
-            string repository = "Streamer.bot-Actions";
-            string filePath = "Update-Macro-Deck-veriables/Text/Import-Code.txt";
-            string branch = "main"; // or whichever branch your file is in
-
-            string apiUrl = $"https://raw.githubusercontent.com/{username}/{repository}/{branch}/{filePath}";
-
-            string fileContent = GetFileContent(apiUrl);
-
-            //Import Code for streamer.bot
-            roundedTextBox3.Text = fileContent; 
-
-            // Assuming WebSocketClient has a property named State indicating the connection state
-            btn_Connect.Text = WebSocketClient.IsConnected ? "Disconnect" : "Connect";
-
-            WebSocketClient.WebSocketConnected += OnConnected;
-            WebSocketClient.WebSocketDisconnected += OnDisconnect;
-
-            // Subscribe to the UpdateVariableList event
-            Main.UpdateVariableList += HandleUpdateVariableList;
-
-            PopulateDataGridView();
-            LoadCheckboxState();
+            this.Load += PluginConfig_Load;
         }
 
-        static string GetFileContent(string url)
+        private async void PluginConfig_Load(object sender, EventArgs e)
         {
-            using (var client = new HttpClient())
+            try
             {
-                HttpResponseMessage response = client.GetAsync(url).Result; // Using .Result to synchronously wait for the response
-                response.EnsureSuccessStatusCode();
+                // Load configuration first (non-UI work)
+                await Task.Run(() => LoadConfiguration());
 
-                string fileContent = response.Content.ReadAsStringAsync().Result; // Using .Result to synchronously wait for the content
+                _isFormLoaded = true;
+                SafeInvoke(() =>
+                {
+                    SetupToolTips();
+                    SetupWebSocketEvents();
+                    UpdateConnectionButton();
+                    linkLabel1.Focus();
+                });
 
-                return fileContent;
+            }
+            catch (Exception ex)
+            {
+                MacroDeckLogger.Error(PluginInstance.Main, $"Form load failed: {ex.Message}");
             }
         }
 
-        private void HandleUpdateVariableList(object sender, EventArgs e)
+        private void LoadConfiguration()
         {
-            PopulateDataGridView();
+            string address = "127.0.0.1";
+            string port = "8080";
+            string endpoint = "/";
+            string password = "";
+
+            string configValue = PluginConfiguration.GetValue(PluginInstance.Main, "Configured") ?? "false";
+            _isConfigured = bool.TryParse(configValue, out bool result) && result;
+
+            if (!_isConfigured)
+            {
+                MacroDeckLogger.Info(PluginInstance.Main, "Streamer.bot plugin isn't configured.");
+            }
+            else
+            {
+                MacroDeckLogger.Info(PluginInstance.Main, "Streamer.bot plugin is configured.");
+                address = PluginConfiguration.GetValue(PluginInstance.Main, "Address") ?? address;
+                port = PluginConfiguration.GetValue(PluginInstance.Main, "Port") ?? port;
+                endpoint = PluginConfiguration.GetValue(PluginInstance.Main, "Endpoint") ?? endpoint;
+
+                var credentialsList = PluginCredentials.GetPluginCredentials(PluginInstance.Main);
+                if (credentialsList?.Count > 0 && credentialsList[0].ContainsKey("password"))
+                {
+                    password = credentialsList[0]["password"];
+                }
+
+                checkBox_AutoConnect.Checked = bool.TryParse(PluginConfiguration.GetValue(PluginInstance.Main, "AutoConnect") as string, out var autoConnect) && autoConnect;
+            }
+
+            address_roundedTextBox.Text = address;
+            port_roundedTextBox.Text = port;
+            endpoint_roundedTextBox.Text = endpoint;
+            password_roundedTextBox.Text = password;
+            password_roundedTextBox.PasswordChar = true;
+        }
+
+        private void SetupToolTips()
+        {
+            var toolTip = new ToolTip()
+            {
+                AutoPopDelay = 5000,
+                InitialDelay = 500,
+                ReshowDelay = 250,
+                ShowAlways = true
+            };
+
+            toolTip.SetToolTip(btn_Connect, "Connect/disconnect from Streamer.bot websocket server");
+            toolTip.SetToolTip(address_roundedTextBox, "Server IP address (e.g., 127.0.0.1 or your remote IP)");
+            toolTip.SetToolTip(port_roundedTextBox, "Websocket server port (default: 8080)");
+            toolTip.SetToolTip(endpoint_roundedTextBox, "Websocket endpoint path (default: /)");
+            toolTip.SetToolTip(password_roundedTextBox, "Optional server password if authentication is required");
+            toolTip.SetToolTip(showPassword_button, "Toggle password visibility");
+        }
+
+        private void SetupWebSocketEvents()
+        {
+            WebSocketService.Instance.Connected += OnConnected;
+            WebSocketService.Instance.Disconnected += OnDisconnect;
+            WebSocketService.Instance.Error += OnErrorMessageReceived;
+            WebSocketService.Instance.MessageReceived_Hello += OnHelloMessageReceived;
+            WebSocketService.Instance.MessageReceived_Info += OnInfoMessageReceived;
+            WebSocketService.Instance.MessageReceived_Actions += OnActionMessageReceived;
+            WebSocketService.Instance.MessageReceived_Globals += OnGlobalsMessageReceived;
+            WebSocketService.Instance.MessageReceived_AuthenticateRequest += OnAuthenticateRequestReceived;
+        }
+
+        private void OnErrorMessageReceived(object sender, string e)
+        {
+            if (e.Contains("Unable to connect to the remote server"))
+            {
+                ShowErrorMessage("Please make sure Streamer.bot and the web socket server is Running");
+            }
+        }
+
+        private void OnHelloMessageReceived(object sender, string e)
+        {
+            try
+            {
+                var jObject = JObject.Parse(e);
+                if (jObject["request"]?.ToString() == "Hello")
+                {
+                    var info = jObject["info"];
+                    if (info != null)
+                    {
+                        this.Invoke((MethodInvoker)delegate {
+                            label_ConnectedTo.Text = info["name"]?.ToString();
+                            label_Version.Text = info["version"]?.ToString();
+                            label_OS.Text = info["os"]?.ToString().ToUpper();
+                            label_OSVersion.Text = info["osVersion"]?.ToString();
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MacroDeckLogger.Error(PluginInstance.Main, $"Failed to parse WebSocket message: {ex.Message}");
+            }
+        }
+
+        private void OnAuthenticateRequestReceived(object sender, string e)
+        {
+            try
+            {
+                var jObject = JObject.Parse(e);
+                if (jObject["request"]?.ToString() == "Hello")
+                {
+                    var info = jObject["info"];
+                    if (info != null)
+                    {
+                        this.Invoke((MethodInvoker)delegate {
+                            label_ConnectedTo.Text = info["name"]?.ToString();
+                            label_Version.Text = info["version"]?.ToString();
+                            label_OS.Text = info["os"]?.ToString().ToUpper();
+                            label_OSVersion.Text = info["osVersion"]?.ToString();
+                        });
+                    }
+
+                    var authentication = jObject["authentication"];
+                    if (authentication != null)
+                    {
+                        string salt = authentication["salt"]?.ToString();
+                        string challenge = authentication["challenge"]?.ToString();
+
+                        // Retrieve the credentials list securely
+                        List<Dictionary<string, string>> credentialsList = PluginCredentials.GetPluginCredentials(PluginInstance.Main);
+                        string password = string.Empty;
+
+                        // Check if there are credentials and extract the password
+                        if (credentialsList != null && credentialsList.Count > 0)
+                        {
+                            var credentials = credentialsList.FirstOrDefault();
+                            if (credentials != null && credentials.ContainsKey("password"))
+                            {
+                                password = credentials["password"];
+                            }
+                        }
+
+                        WebSocketService.Instance.Authenticate(password, salt, challenge);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MacroDeckLogger.Error(PluginInstance.Main, $"Failed to parse WebSocket Hello message: {ex.Message}");
+            }
+        }
+
+        private void OnInfoMessageReceived(object sender, string e)
+        {
+            try
+            {
+                var jObject = JObject.Parse(e);
+                var info = jObject["info"];
+                if (info != null)
+                {
+                    SafeInvoke(() => {
+                        label_ConnectedTo.Text = info["name"]?.ToString();
+                        label_Version.Text = info["version"]?.ToString();
+                        label_OS.Text = info["os"]?.ToString().ToUpper();
+                        label_OSVersion.Text = info["osVersion"]?.ToString();
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                MacroDeckLogger.Error(PluginInstance.Main, $"Failed to parse WebSocket message: {ex.Message}");
+            }
+        }
+
+        // Update all message handlers to use SafeInvoke
+        private void OnActionMessageReceived(object sender, string e)
+        {
+            try
+            {
+                var json = JObject.Parse(e);
+                if (json["id"]?.ToString() == "GetActionsForMacroDeck" && json["count"] != null)
+                {
+                    int count = json["count"].Value<int>();
+                    MacroDeckLogger.Info(PluginInstance.Main, $"[WebSocket] Actions count: {count}");
+
+                    SafeInvoke(() => {
+                        label_ActionCount.Text = count.ToString();
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                MacroDeckLogger.Error(PluginInstance.Main, $"Failed to parse Actions message: {ex.Message}");
+            }
+        }
+
+        private void OnGlobalsMessageReceived(object sender, string e)
+        {
+            try
+            {
+                var json = JObject.Parse(e);
+                string id = json["id"]?.ToString();
+                if ((id == "GetGlobalsForMacroDeck") && json["count"] != null)
+                {
+                    int count = json["count"].Value<int>();
+                    MacroDeckLogger.Info(PluginInstance.Main, $"[WebSocket] {id} count: {count}");
+
+                    SafeInvoke(() => {
+                        label_GlobalCount.Text = count.ToString();
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                MacroDeckLogger.Error(PluginInstance.Main, $"Failed to parse message: {ex.Message}");
+            }
+        }
+
+        // Update the connection button method
+        private void UpdateConnectionButton()
+        {
+            SafeInvoke(() => {
+                btn_Connect.Text = WebSocketService.Instance.IsConnected ? "Disconnect" : "Connect";
+
+                if (WebSocketService.Instance.IsConnected)
+                {
+                    WebSocketService.Instance.GetActionsList();
+                    WebSocketService.Instance.GetGlobalsList();
+                    WebSocketService.Instance.GetConnectionInfo();
+                }
+            });
+        }
+
+        private bool IsInputValid()
+        {
+            if (string.IsNullOrWhiteSpace(address_roundedTextBox.Text))
+            {
+                ShowErrorMessage("Please enter IP/address.");
+                return false;
+            }
+
+            if (!int.TryParse(port_roundedTextBox.Text, out int port) || port < 1 || port > 65535)
+            {
+                ShowErrorMessage("Invalid port number (1-65535).");
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(endpoint_roundedTextBox.Text))
+            {
+                ShowErrorMessage("Please enter endpoint.");
+                return false;
+            }
+
+            return true;
+        }
+
+        private void ShowErrorMessage(string message)
+        {
+            SafeInvoke(() => {
+                using var error = new ErrorMessage(message);
+                error.ShowDialog();
+            });
+        }
+
+        private int GetPort()
+        {
+            return int.TryParse(port_roundedTextBox.Text, out int port) ? port : 8080;
+        }
+
+        private void SaveConfiguration(string address, int port, string endpoint, string password)
+        {
+            try
+            {
+                MacroDeckLogger.Info(PluginInstance.Main,
+                    $"Saving configuration - Address: {address}, Port: {port}, Endpoint: {endpoint}");
+
+                PluginConfiguration.SetValue(PluginInstance.Main, "Address", address);
+                PluginConfiguration.SetValue(PluginInstance.Main, "Port", port.ToString());
+                PluginConfiguration.SetValue(PluginInstance.Main, "Endpoint", endpoint);
+
+                var credentials = new Dictionary<string, string>
+                {
+                    { "password", password }
+                };
+
+                PluginCredentials.SetCredentials(PluginInstance.Main, credentials);
+            }
+            catch (Exception ex)
+            {
+                MacroDeckLogger.Error(PluginInstance.Main,
+                    $"Failed to save configuration: {ex.Message}");
+                throw;
+            }
+        }
+
+        private void OnConnected(object sender, EventArgs e)
+        {
+            SafeInvoke(() => {
+                PluginConfiguration.SetValue(PluginInstance.Main, "Configured", "true");
+                btn_Connect.Text = "Disconnect";
+            });
+        }
+
+        private void OnDisconnect(object sender, EventArgs e)
+        {
+            SafeInvoke(() => {
+                ClearConnectionLabels();
+                btn_Connect.Text = "Connect";
+            });
+        }
+
+        // Add this helper method for safe UI updates
+        private void SafeInvoke(Action action)
+        {
+            try
+            {
+                if (this.IsDisposed || !_isFormLoaded)
+                    return;
+
+                if (this.InvokeRequired)
+                {
+                    this.BeginInvoke((MethodInvoker)delegate {
+                        if (!this.IsDisposed) action();
+                    });
+                }
+                else
+                {
+                    if (!this.IsDisposed) action();
+                }
+            }
+            catch (InvalidOperationException ex)
+            {
+                MacroDeckLogger.Warning(PluginInstance.Main, $"SafeInvoke skipped: {ex.Message}");
+            }
+        }
+
+        private void ClearConnectionLabels()
+        {
+            label_ConnectedTo.Text = "";
+            label_Version.Text = "";
+            label_OS.Text = "";
+            label_OSVersion.Text = "";
+            label_ActionCount.Text = "";
+            label_GlobalCount.Text = "";
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            try
+            {
+                System.Diagnostics.Process.Start("explorer.exe", "https://github.com/MrVibesRSA/Streamer.bot-Plugin");
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessage("Error opening the link: " + ex);
+            }
+        }
+
+        private async void btn_Connect_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                btn_Connect.Enabled = false;
+
+                if (!IsInputValid())
+                {
+                    btn_Connect.Enabled = true;
+                    return;
+                }
+
+                SaveConfiguration(
+                    address_roundedTextBox.Text,
+                    GetPort(),
+                    endpoint_roundedTextBox.Text,
+                    password_roundedTextBox.Text
+                );
+
+                if (WebSocketService.Instance.IsConnected)
+                {
+                    await DisconnectFromServer();
+                }
+                else
+                {
+                    await ConnectToServer();
+                }
+            }
+            finally
+            {
+                btn_Connect.Enabled = true;
+            }
+        }
+
+        private async Task ConnectToServer()
+        {
+            try
+            {
+                var uri = new UriBuilder("ws", address_roundedTextBox.Text, GetPort(), endpoint_roundedTextBox.Text).Uri;
+
+                var timeoutTask = Task.Delay(TimeSpan.FromSeconds(10));
+                var connectTask = WebSocketService.Instance.StartAsync(uri.ToString());
+
+                var completedTask = await Task.WhenAny(connectTask, timeoutTask);
+                if (completedTask == timeoutTask)
+                {
+                    ShowErrorMessage("Connection timed out after 10 seconds");
+                    return;
+                }
+
+                await connectTask;
+            }
+            catch (UriFormatException ex)
+            {
+                ShowErrorMessage($"Invalid connection URL: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                MacroDeckLogger.Error(PluginInstance.Main, $"Connection failed: {ex.Message}");
+                ShowErrorMessage($"Connection failed: {ex.Message}");
+            }
+        }
+
+        private async Task DisconnectFromServer()
+        {
+            try
+            {
+                WebSocketService.Instance.Close();
+                MacroDeckLogger.Info(PluginInstance.Main, "Disconnected from WebSocket server");
+            }
+            catch (Exception ex)
+            {
+                MacroDeckLogger.Error(PluginInstance.Main,
+                    $"Error during disconnection: {ex.Message}");
+                ShowErrorMessage("Error while disconnecting");
+            }
         }
 
         private void btn_OK_Click(object sender, EventArgs e)
@@ -85,254 +524,39 @@ namespace MrVibes_RSA.StreamerbotPlugin.GUI
             this.Close();
         }
 
-        private void btn_Connect_Click(object sender, EventArgs e)
+        private void showPassword_button_Click_1(object sender, EventArgs e)
         {
-            if (textBox_Address.Text == "")
+            password_roundedTextBox.PasswordChar = !password_roundedTextBox.PasswordChar;
+            showPassword_button.Text = password_roundedTextBox.PasswordChar ? "Show" : "Hide";
+
+            if (!password_roundedTextBox.PasswordChar)
             {
-                using var error = new ErrorMessage("Please enter ip/address.");
-                error.ShowDialog();
-                return;
-            }
-
-            if (textBox_Port.Text == "")
-            {
-                using var error = new ErrorMessage("please enter port.");
-                error.ShowDialog();
-                return;
-            }
-
-            var webSocketClient = WebSocketClient.Instance;
-
-            string address = textBox_Address.Text;
-            int port;
-            string endpoint = textBox_Endpoint.Text;
-            Uri serverUri = null;
-
-            if (int.TryParse(textBox_Port.Text, out port))
-            {
-                // Port parsing successful, use the 'port' variable here
-                UriBuilder uriBuilder = new UriBuilder("ws", address, port, endpoint);
-                serverUri = uriBuilder.Uri;
-
-                PluginConfiguration.SetValue(PluginInstance.Main, "Address", textBox_Address.Text);
-                PluginConfiguration.SetValue(PluginInstance.Main, "Port", textBox_Port.Text);
-                PluginConfiguration.SetValue(PluginInstance.Main, "Endpoint", textBox_Endpoint.Text);
-            }
-            else
-            {
-                using var error = new ErrorMessage("Invalid port number entered.");
-                error.ShowDialog();
-                return;
-            }
-
-            try
-            {
-                if (btn_Connect.Text == "Connect")
-                {
-                    btn_Connect.Text = "Disconnect";
-                    webSocketClient.Connect(serverUri.ToString());
-                }
-                else if (btn_Connect.Text == "Disconnect")
-                {
-                    webSocketClient.Close();
-                    btn_Connect.Text = "Connect";
-                    PluginConfiguration.SetValue(PluginInstance.Main, "Configured", "False");
-                }
-            }
-            catch (Exception ex)
-            {
-                MacroDeckLogger.Info(PluginInstance.Main, $"Error: {ex.Message}");
-            }
-        }
-
-        private void OnConnected(object sender, EventArgs e)
-        {
-            PluginConfiguration.SetValue(PluginInstance.Main, "Configured", "True");
-            btn_Connect.Text = "Disconnect";
-            this.Invalidate();
-            this.Update();
-        }
-
-        private void OnDisconnect(object sender, CloseEventArgs e)
-        {
-            btn_Connect.Text = "Connect";
-            this.Invalidate();
-            this.Update();
-
-            if(e.Code == 1006)
-            {
-                using var error = new ErrorMessage("Not Connecting to Streamer.bot" +
-                    "\nMake sure Streamer.bot and Websocket Server is running" );
-                error.ShowDialog();
-            }
-
-        }
-
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.ColumnIndex == dataGridView1.Columns["checkBoxColumn"].Index && e.RowIndex >= 0)
-            {
-                DataGridViewCheckBoxCell checkBoxCell = dataGridView1.Rows[e.RowIndex].Cells["checkBoxColumn"] as DataGridViewCheckBoxCell;
-
-                // Get the state before the click
-                bool prevState = Convert.ToBoolean(checkBoxCell.Value);
-
-                // Toggle the checkbox state
-                checkBoxCell.Value = !(prevState);
-
-                // Get the current state after the click
-                bool currentState = Convert.ToBoolean(checkBoxCell.Value);
-
-                // Get the variable name and value
-                string variableName = dataGridView1.Rows[e.RowIndex].Cells["VariableName"].Value.ToString();
-                string variableValue = dataGridView1.Rows[e.RowIndex].Cells["VariableValue"].Value.ToString();
-
-                if (currentState)
-                {
-                    // Checkbox is checked
-                    selectedVariables.Add(new Tuple<string, string>(variableName, variableValue));
-                    VariableType type = VariableTypeHelper.GetVariableType(variableValue);
-
-                    VariableManager.SetValue(variableName, variableValue, type, PluginInstance.Main, new string[] { "Gobal Variables" });
-                }
-                else
-                {
-                    // Checkbox is unchecked
-                    selectedVariables.RemoveAll(v => v.Item1 == variableName && v.Item2 == variableValue);
-                    VariableManager.DeleteVariable(variableName.ToLower());
-                }
-
-                // Save checkbox state
-                SaveCheckboxState();
-            }
-        }
-
-
-        private void SaveCheckboxState()
-        {
-            // If checkboxStates is null, initialize it
-            if (checkboxStates == null)
-            {
-                checkboxStates = new List<CheckboxState>();
-            }
-
-            // Clear existing checkbox states
-            checkboxStates.Clear();
-
-            // Add current checkbox states
-            foreach (DataGridViewRow row in dataGridView1.Rows)
-            {
-                bool isChecked = Convert.ToBoolean(row.Cells["checkBoxColumn"].Value);
-                string variableName = row.Cells["VariableName"].Value.ToString();
-                string variableValue = row.Cells["VariableValue"].Value.ToString();
-
-                checkboxStates.Add(new CheckboxState
-                {
-                    IsChecked = isChecked,
-                    VariableName = variableName,
-                    VariableValue = variableValue
+                Task.Delay(30000).ContinueWith(t => {
+                    this.Invoke((MethodInvoker)delegate {
+                        password_roundedTextBox.PasswordChar = true;
+                        showPassword_button.Text = "Show";
+                    });
                 });
             }
-
-            // Serialize and save checkbox states
-            string json = JsonConvert.SerializeObject(checkboxStates, Formatting.Indented);
-            PluginConfiguration.SetValue(PluginInstance.Main, "CheckboxState", json);
         }
 
-        private void LoadCheckboxState()
+        private void checkBox_AutoConnect_CheckedChanged(object sender, EventArgs e)
         {
-            string json = PluginConfiguration.GetValue(PluginInstance.Main, "CheckboxState");
-
-            if (!string.IsNullOrEmpty(json))
-            {
-                checkboxStates = JsonConvert.DeserializeObject<List<CheckboxState>>(json);
-
-                if (checkboxStates.Count > 0)
-                {
-                    // Set checkbox states based on loaded data
-                    foreach (var state in checkboxStates)
-                    {
-                        foreach (DataGridViewRow row in dataGridView1.Rows)
-                        {
-                            if (row.Cells["VariableName"].Value.ToString() == state.VariableName)
-                            {
-                                row.Cells["checkBoxColumn"].Value = state.IsChecked;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
+            PluginConfiguration.SetValue(PluginInstance.Main, "AutoConnect", checkBox_AutoConnect.Checked.ToString());
         }
 
-        private void PopulateDataGridView()
+        protected override void OnFormClosing(FormClosingEventArgs e)
         {
-            string globalVariables = PluginConfiguration.GetValue(PluginInstance.Main, "sb_globals");
+            WebSocketService.Instance.Connected -= OnConnected;
+            WebSocketService.Instance.Disconnected -= OnDisconnect;
+            WebSocketService.Instance.Error -= OnErrorMessageReceived;
+            WebSocketService.Instance.MessageReceived_Hello -= OnHelloMessageReceived;
+            WebSocketService.Instance.MessageReceived_Info -= OnInfoMessageReceived;
+            WebSocketService.Instance.MessageReceived_Actions -= OnActionMessageReceived;
+            WebSocketService.Instance.MessageReceived_Globals -= OnGlobalsMessageReceived;
+            WebSocketService.Instance.MessageReceived_AuthenticateRequest -= OnAuthenticateRequestReceived;
 
-            if (!string.IsNullOrEmpty(globalVariables))
-            {
-                // If global variables exist, deserialize them from JSON
-                var existingGlobals = JsonConvert.DeserializeObject<Dictionary<string, string>>(globalVariables);
-
-                if (existingGlobals != null)
-                {
-                    // Clear existing rows in the DataGridView
-                    dataGridView1.Rows.Clear();
-
-                    foreach (var kvp in existingGlobals)
-                    {
-                        // Add a new row to the DataGridView
-                        dataGridView1.Rows.Add();
-
-                        // Set the key and value in the appropriate columns
-                        int rowIndex = dataGridView1.Rows.Count - 1; // Index of the newly added row
-                        var formattedKey = kvp.Key;
-
-                        // Set the key in the second column (index 1) and value in the third column (index 2)
-                        dataGridView1.Rows[rowIndex].Cells[1].Value = formattedKey.ToLower();
-                        dataGridView1.Rows[rowIndex].Cells[2].Value = kvp.Value.ToLower();
-                    }
-                    dataGridView1.Invalidate();
-                    dataGridView1.Update();
-                    LoadCheckboxState();
-                }
-            }
-        }
-
-        private void buttonPrimary1_Click(object sender, EventArgs e)
-        {
-            // Copy text from the textbox to the clipboard
-            Clipboard.SetText(roundedTextBox3.Text);
-            buttonPrimary1.Text = "Copied";
-
-            // Start a timer to change the button text back to "Copy" after a delay
-            Timer timer = new Timer();
-            timer.Interval = 3000; // 3000 milliseconds = 3 seconds
-            timer.Tick += Timer_Tick;
-            timer.Start();
-        }
-
-        private void Timer_Tick(object sender, EventArgs e)
-        {
-            // Stop the timer
-            Timer timer = (Timer)sender;
-            timer.Stop();
-
-            // Change the button text back to "Copy"
-            buttonPrimary1.Text = "Copy Code";
-        }
-
-        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            // Open the link in the default web browser
-            try
-            {
-                System.Diagnostics.Process.Start("explorer.exe", "https://github.com/MrVibesRSA/Streamer.bot-Plugin");
-            }
-            catch (Exception ex)
-            {
-                System.Windows.Forms.MessageBox.Show("Error opening the link: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            base.OnFormClosing(e);
         }
     }
 }

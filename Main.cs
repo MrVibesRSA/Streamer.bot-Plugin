@@ -1,7 +1,7 @@
 ﻿using MrVibes_RSA.StreamerbotPlugin.Actions;
 using MrVibes_RSA.StreamerbotPlugin.GUI;
-using MrVibes_RSA.StreamerbotPlugin.Models;
-using Newtonsoft.Json;
+using MrVibesRSA.StreamerbotPlugin.Services;
+using MrVibesRSA.StreamerbotPlugin.Utilities;
 using Newtonsoft.Json.Linq;
 using SuchByte.MacroDeck;
 using SuchByte.MacroDeck.GUI;
@@ -12,8 +12,8 @@ using SuchByte.MacroDeck.Variables;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Windows.Forms;
-using WebSocketSharp;
 
 namespace MrVibes_RSA.StreamerbotPlugin
 {
@@ -26,6 +26,8 @@ namespace MrVibes_RSA.StreamerbotPlugin
     {
         private ContentSelectorButton _statusButton = new();
         private MainWindow _mainWindow;
+        private bool _autoConnect;
+        private bool _autoConnectAttempted = false; // Add this field
 
         public static event EventHandler UpdateVariableList;
 
@@ -46,10 +48,15 @@ namespace MrVibes_RSA.StreamerbotPlugin
                 new StreamerBotAction(),
             };
 
+
+            WebSocketService.Instance.Connected += OnConnected;
+            WebSocketService.Instance.Disconnected += OnDisconnect;
+            WebSocketService.Instance.Error += OnError;
+            WebSocketService.Instance.MessageReceived_Globals += Recieved_globals;
+            WebSocketService.Instance.MessageReceived_GlobalUpdated += Updated_global;
+            WebSocketService.Instance.MessageReceived_AuthenticateRequest += OnAuthenticateRequestReceived;
+
             MacroDeck.OnMainWindowLoad += MacroDeck_OnMainWindowLoad;
-            WebSocketClient.WebSocketOnMessageRecieved_globals += WebSocketClient_WebSocketOnMessageRecieved_globals;
-            WebSocketClient.WebSocketConnected += OnConnected;
-            WebSocketClient.WebSocketDisconnected += OnDisconnect;
         }
 
         private void MacroDeck_OnMainWindowLoad(object sender, EventArgs e)
@@ -64,12 +71,91 @@ namespace MrVibes_RSA.StreamerbotPlugin
 
             _statusButton.Click += StatusButton_Click;
             _mainWindow?.contentButtonPanel.Controls.Add(_statusButton);
+
             UpdateStatusIcon();
+
+            _autoConnect = bool.TryParse(PluginConfiguration.GetValue(PluginInstance.Main, "AutoConnect") as string, out var result) && result;
+            if (_autoConnect)
+            {
+                AutoConnect();
+            }
+        }
+
+        private async void AutoConnect()
+        {
+            if (_autoConnectAttempted) return;
+            _autoConnectAttempted = true;
+
+            try
+            {
+                string address = PluginConfiguration.GetValue(PluginInstance.Main, "Address") ?? "127.0.0.1";
+                string portString = PluginConfiguration.GetValue(PluginInstance.Main, "Port") ?? "8080";
+                int port = int.Parse(portString);
+                string endpoint = PluginConfiguration.GetValue(PluginInstance.Main, "Endpoint") ?? "/";
+
+                var uriBuilder = new UriBuilder("ws", address, port, endpoint);
+
+                await WebSocketService.Instance.StartAsync(uriBuilder.Uri.ToString());
+            }
+            catch (Exception ex)
+            {
+                MacroDeckLogger.Error(PluginInstance.Main, $"Auto-connect failed: {ex.Message}");
+            }
+            finally
+            {
+                _autoConnectAttempted = false;
+            }
+        }
+        private void OnAuthenticateRequestReceived(object sender, string e)
+        {
+            if (_autoConnect)
+            {
+                try
+                {
+                    var jObject = JObject.Parse(e);
+                    if (jObject["request"]?.ToString() == "Hello")
+                    {
+                        var authentication = jObject["authentication"];
+                        if (authentication != null)
+                        {
+                            string salt = authentication["salt"]?.ToString();
+                            string challenge = authentication["challenge"]?.ToString();
+
+                            // Retrieve the credentials list securely
+                            List<Dictionary<string, string>> credentialsList = PluginCredentials.GetPluginCredentials(PluginInstance.Main);
+                            string password = string.Empty;
+
+                            // Check if there are credentials and extract the password
+                            if (credentialsList != null && credentialsList.Count > 0)
+                            {
+                                var credentials = credentialsList.FirstOrDefault();
+                                if (credentials != null && credentials.ContainsKey("password"))
+                                {
+                                    password = credentials["password"];
+                                }
+                            }
+
+                            WebSocketService.Instance.Authenticate(password, salt, challenge);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MacroDeckLogger.Error(PluginInstance.Main, $"Failed to parse WebSocket Hello message: {ex.Message}");
+                }
+            }
         }
 
         private void StatusButton_Click(object sender, EventArgs e)
         {
             OpenConfigurator();
+        }
+
+        // Optional; Gets called when the user clicks on the "Configure" button in the package manager; If CanConfigure is not set to true, you don't need to add this
+        public override void OpenConfigurator()
+        {
+            using var pluginConfig = new PluginConfig();
+            pluginConfig.ShowDialog();
         }
 
         private void UpdateStatusIcon()
@@ -79,7 +165,7 @@ namespace MrVibes_RSA.StreamerbotPlugin
             {
                 _mainWindow.Invoke(() =>
                 {
-                    _statusButton.BackgroundImage = WebSocketClient.IsConnected ? MrVibesRSA.StreamerbotPlugin.Properties.Resources.streamerbot_logo_Connected : MrVibesRSA.StreamerbotPlugin.Properties.Resources.streamerbot_logo_Disconnected;
+                    _statusButton.BackgroundImage = WebSocketService.Instance.IsConnected ? MrVibesRSA.StreamerbotPlugin.Properties.Resources.streamerbot_logo_Connected : MrVibesRSA.StreamerbotPlugin.Properties.Resources.streamerbot_logo_Disconnected;
                 });
             }
         }
@@ -89,95 +175,107 @@ namespace MrVibes_RSA.StreamerbotPlugin
             _statusButton.BackgroundImage = MrVibesRSA.StreamerbotPlugin.Properties.Resources.streamerbot_logo_Connected;
         }
 
-        private void OnDisconnect(object sender, CloseEventArgs e)
+        private void OnDisconnect(object sender, EventArgs e)
         {
             _statusButton.BackgroundImage = MrVibesRSA.StreamerbotPlugin.Properties.Resources.streamerbot_logo_Disconnected;
         }
 
-        private void WebSocketClient_WebSocketOnMessageRecieved_globals(object sender, string e)
+        private void OnError(object sender, string e)
         {
-            string json = e.ToString();
+           _statusButton.BackgroundImage = MrVibesRSA.StreamerbotPlugin.Properties.Resources.streamerbot_logo_Error;
+        }
 
-            // Parse the JSON string
-            JObject jsonObject = JObject.Parse(json);
-
-            // Access the key and value from the data section
-            JObject dataObject = (JObject)jsonObject["data"];
-            string key = dataObject.Properties().First().Name;
-            string value = (string)dataObject[key];  
-
-            // Retrieve the current global variables from configuration
-            string globalVariables = PluginConfiguration.GetValue(PluginInstance.Main, "sb_globals");
-
-            if (globalVariables == null || globalVariables == string.Empty)
+        private void Recieved_globals(object sender, string e)
+        {
+            try
             {
-                // If no global variables exist yet, create a new dictionary
-                var globals = new Dictionary<string, string>
-                {
-                    { key, value }
-                };
+                var json = JObject.Parse(e);
 
-                // Save the dictionary as a JSON string to configuration
-                PluginConfiguration.SetValue(PluginInstance.Main, "sb_globals", JsonConvert.SerializeObject(globals));
-                UpdateVariableList?.Invoke(this, EventArgs.Empty);
-                return;
-            }
-            else
-            {
-                // If global variables exist, deserialize them from JSON
-                JObject globalVariablesObject = JObject.Parse(globalVariables);
-                Dictionary<string, string> globalVariablesDict = globalVariablesObject.ToObject<Dictionary<string, string>>();
-
-                // Check if the new key already exists in the global variables dictionary
-                if (!globalVariablesDict.ContainsKey(key))
-                {
-                    // Append the new key-value pair
-                    globalVariablesDict.Add(key, value);
-
-                    JObject updatedGlobalVariablesObject = JObject.FromObject(globalVariablesDict);
-                    PluginConfiguration.SetValue(PluginInstance.Main, "sb_globals", updatedGlobalVariablesObject.ToString());
-                    UpdateVariableList?.Invoke(this, EventArgs.Empty);
+                if (json["id"]?.ToString() != "GetGlobalsForMacroDeck")
                     return;
-                }
-                else
+
+                // Parse the variables from JSON
+                var variablesJson = json["variables"] as JObject;
+                if (variablesJson == null)
+                    return;
+
+                // Fetch existing variables from Macro Deck
+                var existingVariables = VariableManager.GetVariables(PluginInstance.Main) ?? new List<Variable>();
+
+                string groupName = "Global_SB_Variables";
+
+                // Build dictionaries for easier lookup
+                var existingDict = existingVariables.ToDictionary(v => v.Name, v => v);
+                var incomingDict = new Dictionary<string, JToken>();
+
+                foreach (var prop in variablesJson.Properties())
                 {
-                    // Update the existing value
-                    globalVariablesDict[key] = value;
-                    JObject updatedGlobalVariablesObject = JObject.FromObject(globalVariablesDict);
+                    incomingDict[prop.Name] = prop.Value["value"];
+                }
 
-                    PluginConfiguration.SetValue(PluginInstance.Main, "sb_globals", updatedGlobalVariablesObject.ToString());
+                // Handle added or updated variables
+                foreach (var kvp in incomingDict)
+                {
+                    string key = kvp.Key;
+                    var value = kvp.Value;
 
-                    var whiteList = PluginConfiguration.GetValue(PluginInstance.Main, "CheckboxState");
-                    List<Variable> variables = JsonConvert.DeserializeObject<List<Variable>>(whiteList);
-
-                    foreach (var variable in variables)
+                    if (!existingDict.ContainsKey(key))
                     {
-                        if (variable.VariableName.ToLower() == key.ToLower() && variable.IsChecked)
+                        // New variable -> Add it
+                        VariableType type = VariableTypeHelper.GetVariableType(value);
+                        VariableManager.SetValue(key, value.ToString(), type, PluginInstance.Main, new string[] { groupName });
+                    }
+                    else
+                    {
+                        // Existing variable -> Check if value needs update
+                        var existingVar = existingDict[key];
+                        if (existingVar.Value != value.ToString())
                         {
-                            // Your code logic here
                             VariableType type = VariableTypeHelper.GetVariableType(value);
-                            VariableManager.SetValue(key, value, type, PluginInstance.Main, new string[] { "Gobal Variables" });
-                            MacroDeckLogger.Info(PluginInstance.Main, $"Updating global variables: Key:{key} Value: {value}");
+                            VariableManager.SetValue(key, value.ToString(), type, PluginInstance.Main, new string[] { groupName });
                         }
                     }
-                    UpdateVariableList?.Invoke(this, EventArgs.Empty);
-                    return;
                 }
+
+                foreach (var existing in existingDict.Keys)
+                {
+                    if (!incomingDict.ContainsKey(existing))
+                    {
+                        VariableManager.DeleteVariable(existing);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MacroDeckLogger.Error(PluginInstance.Main, $"Failed to sync globals: {ex.Message}");
             }
         }
 
-        // Optional; Gets called when the user clicks on the "Configure" button in the package manager; If CanConfigure is not set to true, you don't need to add this
-        public override void OpenConfigurator()
+        private void Updated_global(object sender, string e)
         {
-            using var pluginConfig = new PluginConfig();
-            pluginConfig.ShowDialog();
-        }
-    }
+            try
+            {
+                var json = JObject.Parse(e);
 
-    public class Variable
-    {
-        public string VariableName { get; set; }
-        public string VariableValue { get; set; }
-        public bool IsChecked { get; set; }
+                var data = json["data"];
+                if (data == null)
+                    return;
+
+                string key = data["name"]?.ToString();
+                var newValue = data["newValue"];
+
+                if (string.IsNullOrEmpty(key) || newValue == null)
+                    return;
+
+                string groupName = "Global_SB_Variables";
+
+                VariableType type = VariableTypeHelper.GetVariableType(newValue);
+                VariableManager.SetValue(key, newValue.ToString(), type, PluginInstance.Main, new string[] { groupName });
+            }
+            catch (Exception ex)
+            {
+                MacroDeckLogger.Error(PluginInstance.Main, $"Failed to update global variable: {ex.Message}");
+            }
+        }
     }
 }

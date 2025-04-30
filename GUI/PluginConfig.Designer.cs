@@ -32,35 +32,39 @@ namespace MrVibes_RSA.StreamerbotPlugin.GUI
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             label1 = new Label();
             label2 = new Label();
             label3 = new Label();
-            textBox_Address = new RoundedTextBox();
-            textBox_Port = new RoundedTextBox();
+            address_roundedTextBox = new RoundedTextBox();
+            port_roundedTextBox = new RoundedTextBox();
             btn_OK = new ButtonPrimary();
             btn_Connect = new ButtonPrimary();
             panel1 = new RoundedPanel();
-            linkLabel1 = new LinkLabel();
-            textBox_Endpoint = new RoundedTextBox();
+            showPassword_button = new ButtonPrimary();
             label4 = new Label();
+            password_roundedTextBox = new RoundedTextBox();
+            linkLabel1 = new LinkLabel();
+            endpoint_roundedTextBox = new RoundedTextBox();
             label7 = new Label();
             pictureBox1 = new PictureBox();
-            roundedPanel2 = new RoundedPanel();
-            label6 = new Label();
-            dataGridView1 = new DataGridView();
             roundedPanel1 = new RoundedPanel();
+            label_GlobalCount = new Label();
+            label_ActionCount = new Label();
+            label10 = new Label();
+            label6 = new Label();
+            label_OSVersion = new Label();
+            label_OS = new Label();
+            label12 = new Label();
+            label11 = new Label();
+            label_Version = new Label();
+            label8 = new Label();
+            label_ConnectedTo = new Label();
             label5 = new Label();
-            roundedTextBox3 = new RoundedTextBox();
-            buttonPrimary1 = new ButtonPrimary();
-            checkboxColumn = new DataGridViewCheckBoxColumn();
-            VariableName = new DataGridViewTextBoxColumn();
-            VariableValue = new DataGridViewTextBoxColumn();
+            label9 = new Label();
+            label13 = new Label();
+            checkBox_AutoConnect = new CheckBox();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
-            roundedPanel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             roundedPanel1.SuspendLayout();
             SuspendLayout();
             // 
@@ -69,7 +73,7 @@ namespace MrVibes_RSA.StreamerbotPlugin.GUI
             label1.AutoSize = true;
             label1.BackColor = Color.FromArgb(36, 36, 36);
             label1.Font = new Font("Tahoma", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label1.Location = new Point(24, 4);
+            label1.Location = new Point(24, 9);
             label1.Name = "label1";
             label1.Size = new Size(219, 19);
             label1.TabIndex = 2;
@@ -80,7 +84,7 @@ namespace MrVibes_RSA.StreamerbotPlugin.GUI
             label2.AutoSize = true;
             label2.BackColor = Color.FromArgb(36, 36, 36);
             label2.ForeColor = Color.Gainsboro;
-            label2.Location = new Point(24, 25);
+            label2.Location = new Point(139, 53);
             label2.Name = "label2";
             label2.Size = new Size(53, 16);
             label2.TabIndex = 4;
@@ -90,51 +94,51 @@ namespace MrVibes_RSA.StreamerbotPlugin.GUI
             // 
             label3.AutoSize = true;
             label3.BackColor = Color.FromArgb(36, 36, 36);
-            label3.Location = new Point(268, 25);
+            label3.Location = new Point(162, 83);
             label3.Name = "label3";
             label3.Size = new Size(30, 16);
             label3.TabIndex = 5;
             label3.Text = "Port";
             // 
-            // textBox_Address
+            // address_roundedTextBox
             // 
-            textBox_Address.BackColor = Color.FromArgb(65, 65, 65);
-            textBox_Address.Font = new Font("Tahoma", 9F);
-            textBox_Address.Icon = null;
-            textBox_Address.Location = new Point(24, 42);
-            textBox_Address.MaxCharacters = 32767;
-            textBox_Address.Multiline = false;
-            textBox_Address.Name = "textBox_Address";
-            textBox_Address.Padding = new Padding(8, 5, 8, 5);
-            textBox_Address.PasswordChar = false;
-            textBox_Address.PlaceHolderColor = Color.Gray;
-            textBox_Address.PlaceHolderText = "";
-            textBox_Address.ReadOnly = false;
-            textBox_Address.ScrollBars = ScrollBars.None;
-            textBox_Address.SelectionStart = 0;
-            textBox_Address.Size = new Size(238, 25);
-            textBox_Address.TabIndex = 6;
-            textBox_Address.TextAlignment = HorizontalAlignment.Left;
+            address_roundedTextBox.BackColor = Color.FromArgb(65, 65, 65);
+            address_roundedTextBox.Font = new Font("Tahoma", 9F, FontStyle.Italic);
+            address_roundedTextBox.Icon = null;
+            address_roundedTextBox.Location = new Point(198, 48);
+            address_roundedTextBox.MaxCharacters = 32767;
+            address_roundedTextBox.Multiline = false;
+            address_roundedTextBox.Name = "address_roundedTextBox";
+            address_roundedTextBox.Padding = new Padding(8, 5, 8, 5);
+            address_roundedTextBox.PasswordChar = false;
+            address_roundedTextBox.PlaceHolderColor = Color.Gray;
+            address_roundedTextBox.PlaceHolderText = "";
+            address_roundedTextBox.ReadOnly = false;
+            address_roundedTextBox.ScrollBars = ScrollBars.None;
+            address_roundedTextBox.SelectionStart = 0;
+            address_roundedTextBox.Size = new Size(238, 25);
+            address_roundedTextBox.TabIndex = 6;
+            address_roundedTextBox.TextAlignment = HorizontalAlignment.Left;
             // 
-            // textBox_Port
+            // port_roundedTextBox
             // 
-            textBox_Port.BackColor = Color.FromArgb(65, 65, 65);
-            textBox_Port.Font = new Font("Tahoma", 9F);
-            textBox_Port.Icon = null;
-            textBox_Port.Location = new Point(268, 42);
-            textBox_Port.MaxCharacters = 32767;
-            textBox_Port.Multiline = false;
-            textBox_Port.Name = "textBox_Port";
-            textBox_Port.Padding = new Padding(8, 5, 8, 5);
-            textBox_Port.PasswordChar = false;
-            textBox_Port.PlaceHolderColor = Color.Gray;
-            textBox_Port.PlaceHolderText = "";
-            textBox_Port.ReadOnly = false;
-            textBox_Port.ScrollBars = ScrollBars.None;
-            textBox_Port.SelectionStart = 0;
-            textBox_Port.Size = new Size(109, 25);
-            textBox_Port.TabIndex = 7;
-            textBox_Port.TextAlignment = HorizontalAlignment.Left;
+            port_roundedTextBox.BackColor = Color.FromArgb(65, 65, 65);
+            port_roundedTextBox.Font = new Font("Tahoma", 9F, FontStyle.Italic);
+            port_roundedTextBox.Icon = null;
+            port_roundedTextBox.Location = new Point(198, 79);
+            port_roundedTextBox.MaxCharacters = 32767;
+            port_roundedTextBox.Multiline = false;
+            port_roundedTextBox.Name = "port_roundedTextBox";
+            port_roundedTextBox.Padding = new Padding(8, 5, 8, 5);
+            port_roundedTextBox.PasswordChar = false;
+            port_roundedTextBox.PlaceHolderColor = Color.Gray;
+            port_roundedTextBox.PlaceHolderText = "";
+            port_roundedTextBox.ReadOnly = false;
+            port_roundedTextBox.ScrollBars = ScrollBars.None;
+            port_roundedTextBox.SelectionStart = 0;
+            port_roundedTextBox.Size = new Size(109, 25);
+            port_roundedTextBox.TabIndex = 7;
+            port_roundedTextBox.TextAlignment = HorizontalAlignment.Left;
             // 
             // btn_OK
             // 
@@ -145,12 +149,12 @@ namespace MrVibes_RSA.StreamerbotPlugin.GUI
             btn_OK.ForeColor = Color.White;
             btn_OK.HoverColor = Color.Empty;
             btn_OK.Icon = null;
-            btn_OK.Location = new Point(293, 490);
+            btn_OK.Location = new Point(291, 428);
             btn_OK.Name = "btn_OK";
             btn_OK.Progress = 0;
             btn_OK.ProgressColor = Color.FromArgb(0, 103, 205);
             btn_OK.Size = new Size(75, 23);
-            btn_OK.TabIndex = 8;
+            btn_OK.TabIndex = 11;
             btn_OK.Text = "OK";
             btn_OK.UseVisualStyleBackColor = false;
             btn_OK.UseWindowsAccentColor = true;
@@ -166,12 +170,12 @@ namespace MrVibes_RSA.StreamerbotPlugin.GUI
             btn_Connect.ForeColor = Color.White;
             btn_Connect.HoverColor = Color.Empty;
             btn_Connect.Icon = null;
-            btn_Connect.Location = new Point(500, 43);
+            btn_Connect.Location = new Point(258, 183);
             btn_Connect.Name = "btn_Connect";
             btn_Connect.Progress = 0;
             btn_Connect.ProgressColor = Color.FromArgb(0, 103, 205);
             btn_Connect.Size = new Size(108, 23);
-            btn_Connect.TabIndex = 9;
+            btn_Connect.TabIndex = 10;
             btn_Connect.Text = "Connect";
             btn_Connect.UseVisualStyleBackColor = false;
             btn_Connect.UseWindowsAccentColor = true;
@@ -181,68 +185,111 @@ namespace MrVibes_RSA.StreamerbotPlugin.GUI
             // panel1
             // 
             panel1.BackColor = Color.FromArgb(36, 36, 36);
-            panel1.Controls.Add(linkLabel1);
-            panel1.Controls.Add(textBox_Endpoint);
-            panel1.Controls.Add(textBox_Port);
-            panel1.Controls.Add(textBox_Address);
+            panel1.Controls.Add(showPassword_button);
             panel1.Controls.Add(label4);
+            panel1.Controls.Add(password_roundedTextBox);
+            panel1.Controls.Add(linkLabel1);
+            panel1.Controls.Add(endpoint_roundedTextBox);
+            panel1.Controls.Add(port_roundedTextBox);
+            panel1.Controls.Add(address_roundedTextBox);
             panel1.Controls.Add(label7);
             panel1.Controls.Add(btn_Connect);
             panel1.Controls.Add(label2);
             panel1.Controls.Add(label1);
             panel1.Controls.Add(label3);
-            panel1.Location = new Point(18, 71);
+            panel1.Location = new Point(18, 78);
             panel1.Name = "panel1";
-            panel1.Size = new Size(625, 76);
+            panel1.Size = new Size(625, 219);
             panel1.TabIndex = 11;
             // 
-            // linkLabel1
+            // showPassword_button
             // 
-            linkLabel1.AutoSize = true;
-            linkLabel1.LinkColor = Color.White;
-            linkLabel1.Location = new Point(554, 7);
-            linkLabel1.Name = "linkLabel1";
-            linkLabel1.Size = new Size(53, 16);
-            linkLabel1.TabIndex = 14;
-            linkLabel1.TabStop = true;
-            linkLabel1.Text = "How to?";
-            linkLabel1.LinkClicked += linkLabel1_LinkClicked;
-            // 
-            // textBox_Endpoint
-            // 
-            textBox_Endpoint.BackColor = Color.FromArgb(65, 65, 65);
-            textBox_Endpoint.Font = new Font("Tahoma", 9F);
-            textBox_Endpoint.Icon = null;
-            textBox_Endpoint.Location = new Point(378, 42);
-            textBox_Endpoint.MaxCharacters = 32767;
-            textBox_Endpoint.Multiline = false;
-            textBox_Endpoint.Name = "textBox_Endpoint";
-            textBox_Endpoint.Padding = new Padding(8, 5, 8, 5);
-            textBox_Endpoint.PasswordChar = false;
-            textBox_Endpoint.PlaceHolderColor = Color.Gray;
-            textBox_Endpoint.PlaceHolderText = "";
-            textBox_Endpoint.ReadOnly = false;
-            textBox_Endpoint.ScrollBars = ScrollBars.None;
-            textBox_Endpoint.SelectionStart = 0;
-            textBox_Endpoint.Size = new Size(116, 25);
-            textBox_Endpoint.TabIndex = 11;
-            textBox_Endpoint.TextAlignment = HorizontalAlignment.Left;
+            showPassword_button.BorderRadius = 8;
+            showPassword_button.FlatAppearance.BorderColor = Color.Cyan;
+            showPassword_button.FlatStyle = FlatStyle.Flat;
+            showPassword_button.Font = new Font("Tahoma", 9.75F);
+            showPassword_button.ForeColor = Color.White;
+            showPassword_button.HoverColor = Color.Empty;
+            showPassword_button.Icon = null;
+            showPassword_button.Location = new Point(442, 143);
+            showPassword_button.Name = "showPassword_button";
+            showPassword_button.Progress = 0;
+            showPassword_button.ProgressColor = Color.FromArgb(0, 103, 205);
+            showPassword_button.Size = new Size(54, 23);
+            showPassword_button.TabIndex = 10;
+            showPassword_button.Text = "Show";
+            showPassword_button.UseVisualStyleBackColor = false;
+            showPassword_button.UseWindowsAccentColor = true;
+            showPassword_button.WriteProgress = true;
+            showPassword_button.Click += showPassword_button_Click_1;
             // 
             // label4
             // 
             label4.AutoSize = true;
             label4.BackColor = Color.FromArgb(36, 36, 36);
-            label4.Location = new Point(260, 46);
+            label4.Location = new Point(130, 146);
             label4.Name = "label4";
-            label4.Size = new Size(12, 16);
-            label4.TabIndex = 13;
-            label4.Text = ":";
+            label4.Size = new Size(70, 16);
+            label4.TabIndex = 16;
+            label4.Text = "password*";
+            // 
+            // password_roundedTextBox
+            // 
+            password_roundedTextBox.BackColor = Color.FromArgb(65, 65, 65);
+            password_roundedTextBox.Font = new Font("Tahoma", 9F);
+            password_roundedTextBox.Icon = null;
+            password_roundedTextBox.Location = new Point(198, 141);
+            password_roundedTextBox.MaxCharacters = 32767;
+            password_roundedTextBox.Multiline = false;
+            password_roundedTextBox.Name = "password_roundedTextBox";
+            password_roundedTextBox.Padding = new Padding(8, 5, 8, 5);
+            password_roundedTextBox.PasswordChar = true;
+            password_roundedTextBox.PlaceHolderColor = Color.Gray;
+            password_roundedTextBox.PlaceHolderText = "";
+            password_roundedTextBox.ReadOnly = false;
+            password_roundedTextBox.ScrollBars = ScrollBars.None;
+            password_roundedTextBox.SelectionStart = 0;
+            password_roundedTextBox.Size = new Size(238, 25);
+            password_roundedTextBox.TabIndex = 9;
+            password_roundedTextBox.TextAlignment = HorizontalAlignment.Left;
+            // 
+            // linkLabel1
+            // 
+            linkLabel1.AutoSize = true;
+            linkLabel1.LinkColor = Color.White;
+            linkLabel1.Location = new Point(555, 12);
+            linkLabel1.Name = "linkLabel1";
+            linkLabel1.Size = new Size(53, 16);
+            linkLabel1.TabIndex = 5;
+            linkLabel1.TabStop = true;
+            linkLabel1.Text = "How to?";
+            linkLabel1.LinkClicked += linkLabel1_LinkClicked;
+            // 
+            // endpoint_roundedTextBox
+            // 
+            endpoint_roundedTextBox.BackColor = Color.FromArgb(65, 65, 65);
+            endpoint_roundedTextBox.Font = new Font("Tahoma", 9F, FontStyle.Italic);
+            endpoint_roundedTextBox.Icon = null;
+            endpoint_roundedTextBox.Location = new Point(198, 110);
+            endpoint_roundedTextBox.MaxCharacters = 32767;
+            endpoint_roundedTextBox.Multiline = false;
+            endpoint_roundedTextBox.Name = "endpoint_roundedTextBox";
+            endpoint_roundedTextBox.Padding = new Padding(8, 5, 8, 5);
+            endpoint_roundedTextBox.PasswordChar = false;
+            endpoint_roundedTextBox.PlaceHolderColor = Color.Gray;
+            endpoint_roundedTextBox.PlaceHolderText = "";
+            endpoint_roundedTextBox.ReadOnly = false;
+            endpoint_roundedTextBox.ScrollBars = ScrollBars.None;
+            endpoint_roundedTextBox.SelectionStart = 0;
+            endpoint_roundedTextBox.Size = new Size(238, 25);
+            endpoint_roundedTextBox.TabIndex = 8;
+            endpoint_roundedTextBox.TextAlignment = HorizontalAlignment.Left;
             // 
             // label7
             // 
             label7.AutoSize = true;
             label7.BackColor = Color.FromArgb(36, 36, 36);
-            label7.Location = new Point(378, 25);
+            label7.Location = new Point(136, 115);
             label7.Name = "label7";
             label7.Size = new Size(56, 16);
             label7.TabIndex = 12;
@@ -258,167 +305,207 @@ namespace MrVibes_RSA.StreamerbotPlugin.GUI
             pictureBox1.TabIndex = 12;
             pictureBox1.TabStop = false;
             // 
-            // roundedPanel2
+            // roundedPanel1
             // 
-            roundedPanel2.BackColor = Color.FromArgb(36, 36, 36);
-            roundedPanel2.Controls.Add(label6);
-            roundedPanel2.Controls.Add(dataGridView1);
-            roundedPanel2.Location = new Point(18, 151);
-            roundedPanel2.Name = "roundedPanel2";
-            roundedPanel2.Size = new Size(625, 271);
-            roundedPanel2.TabIndex = 13;
+            roundedPanel1.BackColor = Color.FromArgb(36, 36, 36);
+            roundedPanel1.Controls.Add(label_GlobalCount);
+            roundedPanel1.Controls.Add(label_ActionCount);
+            roundedPanel1.Controls.Add(label10);
+            roundedPanel1.Controls.Add(label6);
+            roundedPanel1.Controls.Add(label_OSVersion);
+            roundedPanel1.Controls.Add(label_OS);
+            roundedPanel1.Controls.Add(label12);
+            roundedPanel1.Controls.Add(label11);
+            roundedPanel1.Controls.Add(label_Version);
+            roundedPanel1.Controls.Add(label8);
+            roundedPanel1.Controls.Add(label_ConnectedTo);
+            roundedPanel1.Controls.Add(label5);
+            roundedPanel1.Controls.Add(label9);
+            roundedPanel1.Location = new Point(18, 303);
+            roundedPanel1.Name = "roundedPanel1";
+            roundedPanel1.Size = new Size(625, 97);
+            roundedPanel1.TabIndex = 17;
+            // 
+            // label_GlobalCount
+            // 
+            label_GlobalCount.AutoSize = true;
+            label_GlobalCount.BackColor = Color.FromArgb(36, 36, 36);
+            label_GlobalCount.ForeColor = Color.Gainsboro;
+            label_GlobalCount.Location = new Point(409, 68);
+            label_GlobalCount.Name = "label_GlobalCount";
+            label_GlobalCount.Size = new Size(0, 16);
+            label_GlobalCount.TabIndex = 16;
+            // 
+            // label_ActionCount
+            // 
+            label_ActionCount.AutoSize = true;
+            label_ActionCount.BackColor = Color.FromArgb(36, 36, 36);
+            label_ActionCount.ForeColor = Color.Gainsboro;
+            label_ActionCount.Location = new Point(117, 68);
+            label_ActionCount.Name = "label_ActionCount";
+            label_ActionCount.Size = new Size(0, 16);
+            label_ActionCount.TabIndex = 15;
+            // 
+            // label10
+            // 
+            label10.AutoSize = true;
+            label10.BackColor = Color.FromArgb(36, 36, 36);
+            label10.ForeColor = Color.Gainsboro;
+            label10.Location = new Point(297, 68);
+            label10.Name = "label10";
+            label10.Size = new Size(106, 16);
+            label10.TabIndex = 14;
+            label10.Text = "Global var Count:";
             // 
             // label6
             // 
             label6.AutoSize = true;
             label6.BackColor = Color.FromArgb(36, 36, 36);
-            label6.Font = new Font("Tahoma", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label6.Location = new Point(23, 4);
+            label6.ForeColor = Color.Gainsboro;
+            label6.Location = new Point(27, 68);
             label6.Name = "label6";
-            label6.Size = new Size(119, 19);
-            label6.TabIndex = 3;
-            label6.Text = "Gobal Variables";
+            label6.Size = new Size(84, 16);
+            label6.TabIndex = 13;
+            label6.Text = "Action Count:";
             // 
-            // dataGridView1
+            // label_OSVersion
             // 
-            dataGridView1.AllowUserToAddRows = false;
-            dataGridView1.BackgroundColor = Color.FromArgb(35, 35, 35);
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = Color.FromArgb(35, 35, 35);
-            dataGridViewCellStyle1.Font = new Font("Tahoma", 9.75F);
-            dataGridViewCellStyle1.ForeColor = Color.White;
-            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
-            dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
-            dataGridView1.Columns.AddRange(new DataGridViewColumn[] { checkboxColumn, VariableName, VariableValue });
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = Color.FromArgb(86, 86, 86);
-            dataGridViewCellStyle2.Font = new Font("Tahoma", 9.75F);
-            dataGridViewCellStyle2.ForeColor = Color.Gainsboro;
-            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
-            dataGridView1.DefaultCellStyle = dataGridViewCellStyle2;
-            dataGridView1.EnableHeadersVisualStyles = false;
-            dataGridView1.GridColor = Color.FromArgb(45, 45, 45);
-            dataGridView1.Location = new Point(23, 26);
-            dataGridView1.Name = "dataGridView1";
-            dataGridView1.Size = new Size(584, 238);
-            dataGridView1.TabIndex = 0;
-            dataGridView1.CellContentClick += dataGridView1_CellContentClick;
+            label_OSVersion.AutoSize = true;
+            label_OSVersion.BackColor = Color.FromArgb(36, 36, 36);
+            label_OSVersion.ForeColor = Color.Gainsboro;
+            label_OSVersion.Location = new Point(409, 52);
+            label_OSVersion.Name = "label_OSVersion";
+            label_OSVersion.Size = new Size(0, 16);
+            label_OSVersion.TabIndex = 12;
             // 
-            // roundedPanel1
+            // label_OS
             // 
-            roundedPanel1.BackColor = Color.FromArgb(36, 36, 36);
-            roundedPanel1.Controls.Add(label5);
-            roundedPanel1.Controls.Add(roundedTextBox3);
-            roundedPanel1.Controls.Add(buttonPrimary1);
-            roundedPanel1.Location = new Point(18, 427);
-            roundedPanel1.Name = "roundedPanel1";
-            roundedPanel1.Size = new Size(625, 59);
-            roundedPanel1.TabIndex = 14;
+            label_OS.AutoSize = true;
+            label_OS.BackColor = Color.FromArgb(36, 36, 36);
+            label_OS.ForeColor = Color.Gainsboro;
+            label_OS.Location = new Point(409, 36);
+            label_OS.Name = "label_OS";
+            label_OS.Size = new Size(0, 16);
+            label_OS.TabIndex = 11;
+            // 
+            // label12
+            // 
+            label12.AutoSize = true;
+            label12.BackColor = Color.FromArgb(36, 36, 36);
+            label12.ForeColor = Color.Gainsboro;
+            label12.Location = new Point(349, 52);
+            label12.Name = "label12";
+            label12.Size = new Size(55, 16);
+            label12.TabIndex = 10;
+            label12.Text = "Version:";
+            // 
+            // label11
+            // 
+            label11.AutoSize = true;
+            label11.BackColor = Color.FromArgb(36, 36, 36);
+            label11.ForeColor = Color.Gainsboro;
+            label11.Location = new Point(374, 36);
+            label11.Name = "label11";
+            label11.Size = new Size(29, 16);
+            label11.TabIndex = 9;
+            label11.Text = "OS:";
+            // 
+            // label_Version
+            // 
+            label_Version.AutoSize = true;
+            label_Version.BackColor = Color.FromArgb(36, 36, 36);
+            label_Version.ForeColor = Color.Gainsboro;
+            label_Version.Location = new Point(117, 52);
+            label_Version.Name = "label_Version";
+            label_Version.Size = new Size(0, 16);
+            label_Version.TabIndex = 8;
+            // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.BackColor = Color.FromArgb(36, 36, 36);
+            label8.ForeColor = Color.Gainsboro;
+            label8.Location = new Point(56, 52);
+            label8.Name = "label8";
+            label8.Size = new Size(55, 16);
+            label8.TabIndex = 7;
+            label8.Text = "Version:";
+            // 
+            // label_ConnectedTo
+            // 
+            label_ConnectedTo.AutoSize = true;
+            label_ConnectedTo.BackColor = Color.FromArgb(36, 36, 36);
+            label_ConnectedTo.ForeColor = Color.Gainsboro;
+            label_ConnectedTo.Location = new Point(117, 36);
+            label_ConnectedTo.Name = "label_ConnectedTo";
+            label_ConnectedTo.Size = new Size(0, 16);
+            label_ConnectedTo.TabIndex = 6;
             // 
             // label5
             // 
             label5.AutoSize = true;
             label5.BackColor = Color.FromArgb(36, 36, 36);
-            label5.Font = new Font("Tahoma", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label5.Location = new Point(24, 5);
+            label5.ForeColor = Color.Gainsboro;
+            label5.Location = new Point(24, 36);
             label5.Name = "label5";
-            label5.Size = new Size(149, 19);
-            label5.TabIndex = 10;
-            label5.Text = "Action Import Code";
+            label5.Size = new Size(87, 16);
+            label5.TabIndex = 5;
+            label5.Text = "Connected to:";
             // 
-            // roundedTextBox3
+            // label9
             // 
-            roundedTextBox3.BackColor = Color.FromArgb(65, 65, 65);
-            roundedTextBox3.Enabled = false;
-            roundedTextBox3.Font = new Font("Tahoma", 9F);
-            roundedTextBox3.Icon = null;
-            roundedTextBox3.Location = new Point(24, 25);
-            roundedTextBox3.MaxCharacters = 32767;
-            roundedTextBox3.Multiline = false;
-            roundedTextBox3.Name = "roundedTextBox3";
-            roundedTextBox3.Padding = new Padding(8, 5, 8, 5);
-            roundedTextBox3.PasswordChar = false;
-            roundedTextBox3.PlaceHolderColor = Color.Gray;
-            roundedTextBox3.PlaceHolderText = "";
-            roundedTextBox3.ReadOnly = false;
-            roundedTextBox3.ScrollBars = ScrollBars.None;
-            roundedTextBox3.SelectionStart = 0;
-            roundedTextBox3.Size = new Size(470, 25);
-            roundedTextBox3.TabIndex = 6;
-            roundedTextBox3.TextAlignment = HorizontalAlignment.Left;
+            label9.AutoSize = true;
+            label9.BackColor = Color.FromArgb(36, 36, 36);
+            label9.Font = new Font("Tahoma", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label9.Location = new Point(24, 9);
+            label9.Name = "label9";
+            label9.Size = new Size(122, 19);
+            label9.TabIndex = 2;
+            label9.Text = "Connection Info";
             // 
-            // buttonPrimary1
+            // label13
             // 
-            buttonPrimary1.BorderRadius = 8;
-            buttonPrimary1.FlatAppearance.BorderColor = Color.Cyan;
-            buttonPrimary1.FlatStyle = FlatStyle.Flat;
-            buttonPrimary1.Font = new Font("Tahoma", 9.75F);
-            buttonPrimary1.ForeColor = Color.White;
-            buttonPrimary1.HoverColor = Color.Empty;
-            buttonPrimary1.Icon = null;
-            buttonPrimary1.Location = new Point(499, 26);
-            buttonPrimary1.Name = "buttonPrimary1";
-            buttonPrimary1.Progress = 0;
-            buttonPrimary1.ProgressColor = Color.FromArgb(0, 103, 205);
-            buttonPrimary1.Size = new Size(108, 23);
-            buttonPrimary1.TabIndex = 9;
-            buttonPrimary1.Text = "Copy Code";
-            buttonPrimary1.UseVisualStyleBackColor = false;
-            buttonPrimary1.UseWindowsAccentColor = true;
-            buttonPrimary1.WriteProgress = true;
-            buttonPrimary1.Click += buttonPrimary1_Click;
+            label13.AutoSize = true;
+            label13.BackColor = Color.FromArgb(45, 45, 45);
+            label13.Font = new Font("Tahoma", 9.75F, FontStyle.Italic, GraphicsUnit.Point, 0);
+            label13.Location = new Point(18, 405);
+            label13.Name = "label13";
+            label13.Size = new Size(352, 16);
+            label13.TabIndex = 18;
+            label13.Text = "* Only needed if you enabled authentication in Streamer.bot";
             // 
-            // checkboxColumn
+            // checkBox_AutoConnect
             // 
-            checkboxColumn.HeaderText = "Use";
-            checkboxColumn.Name = "checkboxColumn";
-            checkboxColumn.Width = 50;
-            // 
-            // VariableName
-            // 
-            VariableName.HeaderText = "Variable Name";
-            VariableName.Name = "VariableName";
-            VariableName.ReadOnly = true;
-            VariableName.Width = 200;
-            // 
-            // VariableValue
-            // 
-            VariableValue.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            VariableValue.HeaderText = "Variable Value";
-            VariableValue.Name = "VariableValue";
-            VariableValue.ReadOnly = true;
+            checkBox_AutoConnect.AutoSize = true;
+            checkBox_AutoConnect.Location = new Point(495, 404);
+            checkBox_AutoConnect.Name = "checkBox_AutoConnect";
+            checkBox_AutoConnect.Size = new Size(148, 20);
+            checkBox_AutoConnect.TabIndex = 19;
+            checkBox_AutoConnect.Text = "Auto connect on start";
+            checkBox_AutoConnect.UseVisualStyleBackColor = true;
+            checkBox_AutoConnect.CheckedChanged += checkBox_AutoConnect_CheckedChanged;
             // 
             // PluginConfig
             // 
             AutoScaleDimensions = new SizeF(7F, 16F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(664, 519);
+            BackgroundImageLayout = ImageLayout.Center;
+            ClientSize = new Size(664, 464);
+            Controls.Add(checkBox_AutoConnect);
+            Controls.Add(label13);
             Controls.Add(roundedPanel1);
-            Controls.Add(roundedPanel2);
             Controls.Add(pictureBox1);
             Controls.Add(btn_OK);
             Controls.Add(panel1);
             ForeColor = Color.Gainsboro;
-            Location = new Point(0, 0);
             Name = "PluginConfig";
-            Controls.SetChildIndex(panel1, 0);
-            Controls.SetChildIndex(btn_OK, 0);
-            Controls.SetChildIndex(pictureBox1, 0);
-            Controls.SetChildIndex(roundedPanel2, 0);
-            Controls.SetChildIndex(roundedPanel1, 0);
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
-            roundedPanel2.ResumeLayout(false);
-            roundedPanel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             roundedPanel1.ResumeLayout(false);
             roundedPanel1.PerformLayout();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -426,26 +513,34 @@ namespace MrVibes_RSA.StreamerbotPlugin.GUI
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
-        private RoundedTextBox textBox_Address;
-        private RoundedTextBox textBox_Port;
+        private RoundedTextBox address_roundedTextBox;
+        private RoundedTextBox port_roundedTextBox;
         private ButtonPrimary btn_OK;
         private ButtonPrimary btn_Connect;
         private RoundedPanel panel1;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label label7;
-        private RoundedTextBox textBox_Endpoint;
-        private RoundedPanel roundedPanel2;
-        private System.Windows.Forms.DataGridView dataGridView1;
+        private RoundedTextBox endpoint_roundedTextBox;
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
-        private Label label4;
-        private Label label6;
-        private RoundedPanel roundedPanel1;
-        private RoundedTextBox roundedTextBox3;
-        private ButtonPrimary buttonPrimary1;
-        private Label label5;
         private LinkLabel linkLabel1;
-        private DataGridViewCheckBoxColumn checkboxColumn;
-        private DataGridViewTextBoxColumn VariableName;
-        private DataGridViewTextBoxColumn VariableValue;
+        private Label label4;
+        private RoundedTextBox password_roundedTextBox;
+        private ButtonPrimary showPassword_button;
+        private RoundedPanel roundedPanel1;
+        private Label label9;
+        private Label label_OSVersion;
+        private Label label_OS;
+        private Label label12;
+        private Label label11;
+        private Label label_Version;
+        private Label label8;
+        private Label label_ConnectedTo;
+        private Label label5;
+        private Label label_GlobalCount;
+        private Label label_ActionCount;
+        private Label label10;
+        private Label label6;
+        private Label label13;
+        private CheckBox checkBox_AutoConnect;
     }
 }

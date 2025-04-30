@@ -1,4 +1,5 @@
 ﻿using MrVibes_RSA.StreamerbotPlugin.GUI;
+using MrVibesRSA.StreamerbotPlugin.Services;
 using Newtonsoft.Json;
 using SuchByte.MacroDeck.ActionButton;
 using SuchByte.MacroDeck.GUI;
@@ -11,7 +12,7 @@ namespace MrVibes_RSA.StreamerbotPlugin.Actions
 {
     public class StreamerBotAction : PluginAction
     {
-        private WebSocketClient webSocketClient = WebSocketClient.Instance;
+        private WebSocketService webSocketService = WebSocketService.Instance;
         // The name of the action
         public override string Name => "Run Action";
 
@@ -49,23 +50,9 @@ namespace MrVibes_RSA.StreamerbotPlugin.Actions
         {
             try
             {
-                // Parse the configuration string into a JObject
                 var configObject = JsonConvert.DeserializeObject<dynamic>(configuration);
 
-                // Define the request object
-                string json = "{\n" +
-                    "  \"request\": \"DoAction\",\n" +
-                    "  \"action\": {\n" +
-                    $"    \"id\": \"{(string)configObject.actionId}\",\n" +
-                    $"    \"name\": \"{(string)configObject.actionName}\"\n" +
-                    "  },\n" +
-                    "  \"args\": {\n" +
-                    $"    \"key\": \"{(string)configObject.actionArgument}\"\n" +
-                    "  },\n" +
-                    $"  \"id\": \"{Guid.NewGuid()}\"\n" +
-                    "}"; 
-
-                webSocketClient.SendMessage(json);
+                webSocketService.DoAction(configObject.actionId.ToString(), configObject.actionArgument.ToString());
             }
             catch (Exception ex)
             {

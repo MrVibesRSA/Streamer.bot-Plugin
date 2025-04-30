@@ -1,4 +1,7 @@
-﻿using MrVibes_RSA.StreamerbotPlugin.Models;
+﻿using MrVibesRSA.StreamerbotPlugin.GUI;
+using MrVibesRSA.StreamerbotPlugin.Models;
+using MrVibesRSA.StreamerbotPlugin.Services;
+using MrVibesRSA.StreamerbotPlugin.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SuchByte.MacroDeck.GUI;
@@ -6,6 +9,8 @@ using SuchByte.MacroDeck.GUI.CustomControls;
 using SuchByte.MacroDeck.Logging;
 using SuchByte.MacroDeck.Plugins;
 using System;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace MrVibes_RSA.StreamerbotPlugin.GUI
 {
@@ -13,169 +18,266 @@ namespace MrVibes_RSA.StreamerbotPlugin.GUI
     {
         // Add a variable for the instance of your action to get access to the Configuration etc.
         private PluginAction _macroDeckAction;
-        private WebSocketClient webSocketClient = WebSocketClient.Instance;
+        private WebSocketService webSocketService = WebSocketService.Instance;
+        private GetActionsResponse _actionsData;
+
+        private bool isComboBoxPopulated = false;
+        private Timer connectionCheckTimer;
 
         public StreamerBotActionConfigurator(PluginAction macroDeckAction, ActionConfigurator actionConfigurator)
         {
             this._macroDeckAction = macroDeckAction;
             InitializeComponent();
-            WebSocketClient.WebSocketOnMessageRecieved_actions += WebSocketClient_WebSocketOnMessageRecieved;
-            GetActionList();
+            InitializeConnectionCheck();
+            webSocketService.MessageReceived_Actions += WebSocketService_MessageReceived_Actions;
+            webSocketService.GetActionsList();
         }
 
-        private void WebSocketClient_WebSocketOnMessageRecieved(object sender, string message)
+        private void InitializeConnectionCheck()
         {
-            // Assuming e.Data is a JSON string representing your API response
-            var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(message);
+            connectionCheckTimer = new Timer();
+            connectionCheckTimer.Interval = 5000; // 5 seconds delay
+            connectionCheckTimer.Tick += ConnectionCheckTimer_Tick;
+        }
 
-            if (apiResponse != null && apiResponse.actions != null)
+        private void WebSocketService_MessageReceived_Actions(object sender, string e)
+        {
+            isComboBoxPopulated = false; // Reset the flag before populating
+            PopulateActionGroupComboBox(e);
+            connectionCheckTimer.Start(); // Start the timer to monitor the population status
+        }
+
+        private void OnActionLoad()
+        {
+            // If _actionsData is null or empty, log an error and return early
+            if (_actionsData == null || _actionsData.actions == null || !_actionsData.actions.Any())
             {
-                UpdateFormAcionList(message);
+                MacroDeckLogger.Warning(PluginInstance.Main, "No actions found in _actionsData.");
                 return;
             }
-        }
 
-        public void GetActionList()
-        {
-            // Generate a new Guid
-            string newGuid = Guid.NewGuid().ToString();
+            // Check if the action list still contains the selected action from the configuration
+            var selectedActionId = _macroDeckAction.Configuration != null
+                ? JObject.Parse(_macroDeckAction.Configuration)["actionId"]?.ToString()
+                : null;
 
-            // Format the JSON string with the generated Guid
-            string jsonRequest = @"
+            // Set the selected item in the comboBox based on the configuration's action ID
+            var selectedActionItem = comboBox_ActionList.Items
+                .OfType<ComboBoxItemHelper>()
+                .FirstOrDefault(item => item.Value.ToString() == selectedActionId);
+
+            if (selectedActionItem != null)
             {
-                ""request"": ""GetActions"",
-                ""id"": """ + newGuid + @"""
-            }";
-
-            webSocketClient.SendMessage(jsonRequest);
+                comboBox_ActionList.SelectedItem = selectedActionItem;
+            }
+            else
+            {
+                // If the selected action is not in the combo box anymore, log a warning
+                // MacroDeckLogger.Warning(PluginInstance.Main, $"Selected action with ID '{selectedActionId}' is no longer in the list.");
+            }
         }
 
-        private void UpdateFormAcionList(string message)
+        private void ConnectionCheckTimer_Tick(object sender, EventArgs e)
         {
-            //configuration["actionArgument"]
+            // Stop the timer since we've checked
+            connectionCheckTimer.Stop();
+
+            // If the ComboBox is not populated, it could indicate a connection issue
+            if (!isComboBoxPopulated)
+            {
+                // Show the error panel
+                errorPanel.Visible = true;
+            }
+        }
+
+        private void PopulateActionGroupComboBox(string e)
+        {
+            _actionsData = JsonConvert.DeserializeObject<GetActionsResponse>(e);
+            comboBox_ActionGroup.Items.Clear();
+
+            var actionGroups = _actionsData.actions
+                .Select(a => a.group)
+                .Distinct()
+                .OrderBy(g => g)
+                .ToList();
+
+            comboBox_ActionGroup.Items.Add("All"); // Add "All" at the top
+            comboBox_ActionGroup.Items.AddRange(actionGroups.ToArray());
+            comboBox_ActionGroup.SelectedItem = "All";
+
+            isComboBoxPopulated = true;
+            errorPanel.Visible = false;
+            OnActionLoad();
+        }
+
+        private void comboBox_ActionGroup_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+            PopulateActionList();
+        }
+
+        private void comboBox_ActionList_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+            var selectedItem = comboBox_ActionList.SelectedItem as ComboBoxItemHelper;
+            if (selectedItem == null) return;
+
+            // Find the full action object using the ID
+            var selectedAction = _actionsData.actions.FirstOrDefault(a => a.id == selectedItem.Value.ToString());
+            if (selectedAction == null) return;
+
+            // Now you have full details
+            string actionName = selectedAction.name;
+            bool isEnabled = selectedAction.enabled;
+            int subActionCount = selectedAction.subaction_count;
+            int triggerCount = selectedAction.trigger_count;
+
+            label_actionId.Text = selectedAction.id;
+            label_actionEnabled.Text = isEnabled.ToString();
+            label_subactionCount.Text = subActionCount.ToString();
+            label_triggerCount.Text = triggerCount.ToString();
+        }
+
+        private void PopulateActionList()
+        {
+            var selectedGroup = comboBox_ActionGroup.SelectedItem?.ToString();
+            if (string.IsNullOrEmpty(selectedGroup)) return;
+
+            var filteredActions = _actionsData.actions
+                .Where(a => selectedGroup == "All" || a.group == selectedGroup)
+                .OrderBy(a => a.name)
+                .ToList();
+
             comboBox_ActionList.Items.Clear();
 
-            // Assuming e.Data is a JSON string representing your API response
-            var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(message);
-
-            if (apiResponse != null && apiResponse.actions != null)
+            foreach (var action in filteredActions)
             {
-                foreach (var action in apiResponse.actions)
-                {
-                    // Process each action
-                    // MacroDeckLogger.Error(PluginInstance.Main, $"Action Name: {action.name}, Group: {action.group}, Enabled: {action.enabled}, Subaction Count: {action.subaction_count}");
-                    var item = new Models.Action(action.id, action.name, action.group, action.enabled, action.subaction_count);
-                    comboBox_ActionList.Items.Add(item);
-                }
-
-                if (_macroDeckAction.Configuration != null)
-                {
-                    // Assuming _macroDeckAction.Configuration is a valid JSON string
-                    JObject configurationObject = JObject.Parse(_macroDeckAction.Configuration);
-
-                    // Further processing with configurationObject...
-                    var selected = configurationObject["actionName"]?.ToString();
-                    textBox_Arguments.Text = configurationObject["actionArgument"]?.ToString();
-
-                    label_actionId.Text = configurationObject["actionId"]?.ToString();
-                    label_actionName.Text = configurationObject["actionName"]?.ToString();
-                    label_actionGroup.Text = configurationObject["actionGroup"]?.ToString();
-                    label_actionEnabled.Text = configurationObject["actionEnabled"]?.ToString();
-                    label_subactionCount.Text = configurationObject["actionSubactionCount"]?.ToString();
-
-                    if (selected == string.Empty)
-                    {
-                        // Handle the case where selected is null or empty
-                        if (comboBox_ActionList.Items.Count > 0)
-                        {
-                            comboBox_ActionList.SelectedIndex = 0;
-                        }
-                    }
-                    else
-                    {
-                        comboBox_ActionList.Text = selected;
-                    }
-                }
-                else
-                {
-                    // Handle the case where _macroDeckAction.Configuration is null
-                    // For example, you could provide default values or log a message.
-                    MacroDeckLogger.Info(PluginInstance.Main, "_macroDeckAction.Configuration is null.");
-                }
-            }
-        }
-
-        public override bool OnActionSave()
-        {
-            if (comboBox_ActionList.SelectedItem == null)
-            {
-                return false; // Return false if no action is selected
+                comboBox_ActionList.Items.Add(new ComboBoxItemHelper(action.name, action.id));
             }
 
-            try
+            if (comboBox_ActionList.Items.Count > 0)
             {
-                string summary = "";
-                // Retrieve the selected Action object
-                Models.Action selectedAction = (Models.Action)comboBox_ActionList.SelectedItem;
-
-                JObject configuration = new JObject();
-                configuration["actionId"] = selectedAction.id; // Save the ID of the selected action
-                configuration["actionName"] = selectedAction.name; // Save the name of the selected action
-                configuration["actionArgument"] = textBox_Arguments.Text;
-                configuration["actionGroup"] = selectedAction.group;
-                configuration["actionEnabled"] = selectedAction.enabled;
-                configuration["actionSubactionCount"] = selectedAction.subaction_count;
-
-                if (configuration["actionArgument"].ToString() == string.Empty)
-                {
-                    summary = $"Name - '{configuration["actionName"]}'";
-                }
-                else
-                {
-                    summary = $"Name - '{configuration["actionName"]}', Value - '{configuration["actionArgument"]}'";
-                }
-
-                this._macroDeckAction.ConfigurationSummary = summary; // Set a summary of the configuration that gets displayed in the ButtonConfigurator item
-                this._macroDeckAction.Configuration = configuration.ToString();
+                comboBox_ActionList.SelectedIndex = 0;
             }
-            catch { }
-            return true; // Return true if the action was configured successfully; This closes the ActionConfigurator
         }
 
         private void btn_Refresh_Click(object sender, EventArgs e)
         {
+            webSocketService.GetActionsList();
+        }
+
+        private void copyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Clipboard.SetText(textBox.SelectedText);
+        }
+
+        private void pastToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            textBox.Paste();
+        }
+
+        private void selectAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            textBox.SelectAll();
+        }
+
+        private void formatJsonToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             try
             {
-                GetActionList();
+                var formattedJson = FormatJson(textBox.Text);
+                textBox.Text = formattedJson;
+            }
+            catch (Exception)
+            {
+                ShowErrorMessage("Invalid JSON for formatting.");
+            }
+        }
+
+        private void validateJsonToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var isValid = ValidateJson(textBox.Text);
+                ShowErrorMessage(isValid ? "JSON is valid!" : "Invalid JSON!");
+            }
+            catch (Exception)
+            {
+                ShowErrorMessage("Invalid JSON format.");
+            }
+        }
+
+        private string FormatJson(string json)
+        {
+            var parsedJson = JsonConvert.DeserializeObject(json);
+            return JsonConvert.SerializeObject(parsedJson, Formatting.Indented);
+        }
+
+        private bool ValidateJson(string json)
+        {
+            try
+            {
+                JsonConvert.DeserializeObject(json);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private void ShowErrorMessage(string message)
+        {
+            using var error = new ErrorMessage(message);
+            error.ShowDialog();
+        }
+
+        public override bool OnActionSave()
+        {
+            // Step 1: Check if a valid action is selected
+            var selectedItem = comboBox_ActionList.SelectedItem as ComboBoxItemHelper;
+            if (selectedItem == null)
+            {
+                // No action selected, return false
+                return false;
+            }
+
+            try
+            {
+                // Step 2: Find the full action object using the ID from selected item
+                var selectedAction = _actionsData.actions.FirstOrDefault(a => a.id == selectedItem.Value.ToString());
+                if (selectedAction == null)
+                {
+                    // Action was not found, return false
+                    return false;
+                }
+
+                // Step 3: Create configuration JObject to save action details
+                JObject configuration = new JObject
+                {
+                    ["actionId"] = selectedAction.id,
+                    ["actionName"] = selectedAction.name,
+                    ["actionArgument"] = textBox.Text,
+                    ["actionGroup"] = selectedAction.group,
+                    ["actionEnabled"] = selectedAction.enabled,
+                    ["actionSubactionCount"] = selectedAction.subaction_count,
+                    ["actionTriggerCount"] = selectedAction.trigger_count
+                };
+
+                // Step 4: Create a summary based on the action's name and argument
+                string summary = string.IsNullOrEmpty(configuration["actionArgument"]?.ToString())
+                    ? $"Name - '{configuration["actionName"]}'"
+                    : $"Name - '{configuration["actionName"]}', Value - '{configuration["actionArgument"]}'";
+
+                // Step 5: Save the summary and configuration
+                this._macroDeckAction.ConfigurationSummary = summary;
+                this._macroDeckAction.Configuration = configuration.ToString();
+
+                return true;
             }
             catch (Exception ex)
             {
-                MacroDeckLogger.Trace(PluginInstance.Main, "Failed to refresh actions: " + ex.Message);
+                MacroDeckLogger.Error(PluginInstance.Main, $"Error while saving action: {ex.Message}");
+                return false;
             }
-        }
-
-        private void SaveDate()
-        {
-            Models.Action selectedAction = (Models.Action)comboBox_ActionList.SelectedItem;
-
-            JObject configuration = new JObject();
-            configuration["actionId"] = selectedAction.id; // Save the ID of the selected action
-            configuration["actionName"] = selectedAction.name; // Save the name of the selected action
-            configuration["actionArgument"] = textBox_Arguments.Text;
-            configuration["actionGroup"] = selectedAction.group;
-            configuration["actionEnabled"] = selectedAction.enabled;
-            configuration["actionSubaction_count"] = selectedAction.subaction_count;
-        }
-
-        private void comboBox_ActionList_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            Models.Action selectedAction = (Models.Action)comboBox_ActionList.SelectedItem;
-            label_actionId.Text = selectedAction.id.ToString();
-            label_actionName.Text = selectedAction.name.ToString();
-            label_actionGroup.Text = selectedAction.group.ToString();
-            label_actionEnabled.Text = selectedAction.enabled.ToString();
-            label_subactionCount.Text = selectedAction.subaction_count.ToString();
-            SaveDate();
         }
     }
 }
