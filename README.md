@@ -1,8 +1,8 @@
 # Streamer.bot Plugin 
 
 Streamer.bot plugin for Macro Deck.
-[Link to Changelog](#changelog) Updated 29/04/2025
 
+Updated 29/04/2025 [Changelog](#changelog) 
 
 ---
 
@@ -47,7 +47,7 @@ Enter the WebSocket server address, port number, and endpoint provided by your S
 - **Rebuilt the “Connect to Server” UI**:
   - Added password field.
   - Added auto-connect on start checkbox.
-- **Rebuilt the “Do Action” UI**:
+- **Rebuilt the “Run Action” UI**:
   - Streamer.bot actions can now be filtered by action group.
   - Added search feature with autocomplete in the dropdown.
 - **Expanded the argument field**:
