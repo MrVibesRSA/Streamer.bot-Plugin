@@ -36,7 +36,8 @@ Enter the WebSocket server address, port number, and endpoint provided by your S
 
 ---
 
-## Changelog {#changelog}
+## Changelog
+Updated 29/04/2025
 - **Completely rebuilt the plugin** for easier maintenance and feature addition.
 - **Moved from using WebSocketSharp** to `System.Net.WebSockets`.
 - **Auto-connect on start** functionality added.
