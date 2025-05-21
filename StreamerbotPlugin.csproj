@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net8.0-windows7.0</TargetFramework>
     <Authors>MrVibes_RSA</Authors>
-    <Version>1.0.2</Version>
+    <Version>1.0.3</Version>
     <Title>Streamer.bot Plugin</Title>
     <Description>This plugin allow you to run your streamer.bot actions and pass in arguments.</Description>
     <UseWindowsForms>true</UseWindowsForms>
@@ -38,6 +38,7 @@
   <ItemGroup>
     <Reference Include="Macro Deck 2">
       <HintPath>..\..\..\..\..\Program Files\Macro Deck\Macro Deck 2.dll</HintPath>
+      <Private>True</Private>
     </Reference>
   </ItemGroup>
 
