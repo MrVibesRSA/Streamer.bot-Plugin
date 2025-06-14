@@ -1,26 +1,42 @@
-﻿using System;
+﻿using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MrVibesRSA.StreamerbotPlugin.Models
 {
-    public class ActionItem
-    {
-        public string id { get; set; }
-        public string name { get; set; }
-        public string group { get; set; }
-        public bool enabled { get; set; }
-        public int subaction_count { get; set; }
-        public int trigger_count { get; set; }
-    }
-
     public class GetActionsResponse
     {
-        public string id { get; set; }
-        public int count { get; set; }
-        public List<ActionItem> actions { get; set; }
-        public string status { get; set; }
+        [JsonProperty("id")]
+        public string Id { get; set; }
+
+        [JsonProperty("count")]
+        public int Count { get; set; }
+
+        [JsonProperty("actions")]
+        public List<ActionItem> Actions { get; set; }
+
+        [JsonProperty("status")]
+        public string Status { get; set; }
     }
+
+    public class ActionItem
+    {
+        [JsonProperty("id")]
+        public string Id { get; set; }
+
+        [JsonProperty("name")]
+        public string Name { get; set; }
+
+        [JsonProperty("group")]
+        public string Group { get; set; }
+
+        [JsonProperty("enabled")]
+        public bool Enabled { get; set; }
+
+        [JsonProperty("subaction_count")]
+        public int SubactionCount { get; set; }
+
+        [JsonProperty("trigger_count")]
+        public int TriggerCount { get; set; }
+    }
+
 }

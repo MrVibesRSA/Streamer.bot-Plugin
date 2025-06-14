@@ -1,21 +1,21 @@
-﻿using MrVibes_RSA.StreamerbotPlugin.Actions;
-using MrVibes_RSA.StreamerbotPlugin.GUI;
+﻿
+using MrVibesRSA.StreamerbotPlugin.Actions;
+using MrVibesRSA.StreamerbotPlugin.GUI;
 using MrVibesRSA.StreamerbotPlugin.Services;
-using MrVibesRSA.StreamerbotPlugin.Utilities;
 using Newtonsoft.Json.Linq;
 using SuchByte.MacroDeck;
 using SuchByte.MacroDeck.GUI;
 using SuchByte.MacroDeck.GUI.CustomControls;
 using SuchByte.MacroDeck.Logging;
 using SuchByte.MacroDeck.Plugins;
-using SuchByte.MacroDeck.Variables;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
-using System.Net;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace MrVibes_RSA.StreamerbotPlugin
+namespace MrVibesRSA.StreamerbotPlugin
 {
     public static class PluginInstance
     {
@@ -24,16 +24,22 @@ namespace MrVibes_RSA.StreamerbotPlugin
 
     public class Main : MacroDeckPlugin
     {
+        private readonly HashSet<WebSocketService> _subscribedInstances = new();
+        private WebSocketProfileManager _websocketProfileManager;
+        private ProfileManager _profile;
+        private SubscribedEventHandler _subscribedEventHandler = new SubscribedEventHandler();
+
         private ContentSelectorButton _statusButton = new();
         private MainWindow _mainWindow;
-        private bool _autoConnect;
-        private bool _autoConnectAttempted = false; // Add this field
+        private int _connectionCount;
 
         public static event EventHandler UpdateVariableList;
+
 
         public Main()
         {
             PluginInstance.Main ??= this;
+
         }
 
         // Optional; If your plugin can be configured, set to "true". It'll make the "Configure" button appear in the package manager.
@@ -42,21 +48,32 @@ namespace MrVibes_RSA.StreamerbotPlugin
         // Gets called when the plugin is loaded
         public override void Enable()
         {
+
             this.Actions = new List<PluginAction>
             {
                 // add the instances of your actions here
                 new StreamerBotAction(),
             };
 
+            _profile = new ProfileManager(); // Make sure this is initialized
+            _websocketProfileManager = WebSocketProfileManager.Instance;
 
-            WebSocketService.Instance.Connected += OnConnected;
-            WebSocketService.Instance.Disconnected += OnDisconnect;
-            WebSocketService.Instance.Error += OnError;
-            WebSocketService.Instance.MessageReceived_Globals += Recieved_globals;
-            WebSocketService.Instance.MessageReceived_GlobalUpdated += Updated_global;
-            WebSocketService.Instance.MessageReceived_AuthenticateRequest += OnAuthenticateRequestReceived;
+            _websocketProfileManager.ProfileAdded += OnProfileAddedEvent;
+            _websocketProfileManager.ProfileRemoved += OnProfileRemovedEvent;
 
             MacroDeck.OnMainWindowLoad += MacroDeck_OnMainWindowLoad;
+
+            AutoConnect();
+        }
+
+        private void OnProfileAddedEvent(object sender, WebSocketService service)
+        {
+            SubscribeToWebSocketEvents(service);
+        }
+
+        private void OnProfileRemovedEvent(object sender, WebSocketService service)
+        {
+            UnsubscribeFromWebSocketEvents(service);
         }
 
         private void MacroDeck_OnMainWindowLoad(object sender, EventArgs e)
@@ -66,83 +83,106 @@ namespace MrVibes_RSA.StreamerbotPlugin
             _statusButton = new ContentSelectorButton
             {
                 BackgroundImageLayout = ImageLayout.Stretch,
-                BackgroundImage = MrVibesRSA.StreamerbotPlugin.Properties.Resources.streamerbot_logo_Disconnected,
+                BackgroundImage = MrVibesRSA.StreamerbotPlugin.Properties.Resources.streamerbot_logo_transparent
             };
 
             _statusButton.Click += StatusButton_Click;
             _mainWindow?.contentButtonPanel.Controls.Add(_statusButton);
 
             UpdateStatusIcon();
-
-            _autoConnect = bool.TryParse(PluginConfiguration.GetValue(PluginInstance.Main, "AutoConnect") as string, out var result) && result;
-            if (_autoConnect)
-            {
-                AutoConnect();
-            }
+            // AutoConnect();
         }
 
         private async void AutoConnect()
         {
-            if (_autoConnectAttempted) return;
-            _autoConnectAttempted = true;
-
-            try
+            var profiles = _profile.GetAllProfiles();
+            if (profiles == null || profiles.Count == 0)
             {
-                string address = PluginConfiguration.GetValue(PluginInstance.Main, "Address") ?? "127.0.0.1";
-                string portString = PluginConfiguration.GetValue(PluginInstance.Main, "Port") ?? "8080";
-                int port = int.Parse(portString);
-                string endpoint = PluginConfiguration.GetValue(PluginInstance.Main, "Endpoint") ?? "/";
-
-                var uriBuilder = new UriBuilder("ws", address, port, endpoint);
-
-                await WebSocketService.Instance.StartAsync(uriBuilder.Uri.ToString());
+                MacroDeckLogger.Info(PluginInstance.Main, "No Streamer.bot profiles found for auto-connect.");
+                return;
             }
-            catch (Exception ex)
+
+            foreach (var profile in profiles)
             {
-                MacroDeckLogger.Error(PluginInstance.Main, $"Auto-connect failed: {ex.Message}");
-            }
-            finally
-            {
-                _autoConnectAttempted = false;
-            }
-        }
-        private void OnAuthenticateRequestReceived(object sender, string e)
-        {
-            if (_autoConnect)
-            {
+                await Task.Delay(500);
+                var profileData = _profile.LoadProfile(profile.Id);
+                if (profileData?.AutoConnect != true) continue;
+
                 try
                 {
-                    var jObject = JObject.Parse(e);
-                    if (jObject["request"]?.ToString() == "Hello")
+                    await _websocketProfileManager.ConnectServiceAsync(profileData.Id);
+                    await Task.Delay(100); // slight delay before checking
+
+                    var service = _websocketProfileManager.GetServiceByProfileId(profileData.Id);
+                    if (service != null)
                     {
-                        var authentication = jObject["authentication"];
-                        if (authentication != null)
-                        {
-                            string salt = authentication["salt"]?.ToString();
-                            string challenge = authentication["challenge"]?.ToString();
+                        SubscribeToWebSocketEvents(service);
+                    }
 
-                            // Retrieve the credentials list securely
-                            List<Dictionary<string, string>> credentialsList = PluginCredentials.GetPluginCredentials(PluginInstance.Main);
-                            string password = string.Empty;
-
-                            // Check if there are credentials and extract the password
-                            if (credentialsList != null && credentialsList.Count > 0)
-                            {
-                                var credentials = credentialsList.FirstOrDefault();
-                                if (credentials != null && credentials.ContainsKey("password"))
-                                {
-                                    password = credentials["password"];
-                                }
-                            }
-
-                            WebSocketService.Instance.Authenticate(password, salt, challenge);
-                        }
+                    if (_websocketProfileManager.HasConnection(profileData.Id))
+                    {
+                        MacroDeckLogger.Info(PluginInstance.Main, $"Profile {profileData.Name} auto connected.");
                     }
                 }
                 catch (Exception ex)
                 {
-                    MacroDeckLogger.Error(PluginInstance.Main, $"Failed to parse WebSocket Hello message: {ex.Message}");
+                    MacroDeckLogger.Error(PluginInstance.Main, $"Auto-connect failed for profile {profileData?.Name}: {ex.Message}");
                 }
+            }
+        }
+
+        private void SubscribeToWebSocketEvents(WebSocketService service)
+        {
+            if (service == null || _subscribedInstances.Contains(service)) return;
+            service.Connected += OnConnected;
+            service.Disconnected += OnDisconnect;
+            service.Error += OnErrorMessageReceived;
+            // service.MessageReceived_Globals += OnGlobalsMessageReceived;
+            // service.MessageReceived_GlobalUpdated += OnGlobalsUpdatedReceived;
+            // service.MessageReceived_AuthenticateRequest += OnAuthenticateRequestReceived;
+            UpdateStatusIcon();
+            _subscribedInstances.Add(service);
+        }
+
+        private void UnsubscribeFromWebSocketEvents(WebSocketService service)
+        {
+            if (service == null || !_subscribedInstances.Contains(service)) return;
+            service.Connected -= OnConnected;
+            service.Disconnected -= OnDisconnect;
+            service.Error -= OnErrorMessageReceived;
+            // service.MessageReceived_Globals -= OnGlobalsMessageReceived;
+            // service.MessageReceived_GlobalUpdated -= OnGlobalsUpdatedReceived;
+            service.MessageReceived_AuthenticateRequest -= OnAuthenticateRequestReceived;
+            UpdateStatusIcon();
+            _subscribedInstances.Remove(service);
+        }
+
+        private void OnAuthenticateRequestReceived(object sender, string e)
+        {
+            try
+            {
+                var source = sender as WebSocketService;
+                if (source == null) return;
+
+                string profileId = _websocketProfileManager.GetProfileIdByService(source);
+                var profile = _profile.LoadProfile(profileId);
+
+                var jObject = JObject.Parse(e);
+                if (jObject["request"]?.ToString() == "Hello")
+                {
+                    var authentication = jObject["authentication"];
+                    if (authentication != null)
+                    {
+                        string salt = authentication["salt"]?.ToString();
+                        string challenge = authentication["challenge"]?.ToString();
+
+                        source.Authenticate(profile.Password, salt, challenge);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MacroDeckLogger.Error(PluginInstance.Main, $"Failed to parse WebSocket Hello message: {ex.Message}");
             }
         }
 
@@ -160,122 +200,92 @@ namespace MrVibes_RSA.StreamerbotPlugin
 
         private void UpdateStatusIcon()
         {
-
             if (_mainWindow != null && !_mainWindow.IsDisposed && _statusButton != null && !_statusButton.IsDisposed)
             {
                 _mainWindow.Invoke(() =>
                 {
-                    _statusButton.BackgroundImage = WebSocketService.Instance.IsConnected ? MrVibesRSA.StreamerbotPlugin.Properties.Resources.streamerbot_logo_Connected : MrVibesRSA.StreamerbotPlugin.Properties.Resources.streamerbot_logo_Disconnected;
+                    _statusButton.BackgroundImage = GetStatusIconWithOverlay();
                 });
             }
         }
 
         private void OnConnected(object sender, EventArgs e)
         {
-            _statusButton.BackgroundImage = MrVibesRSA.StreamerbotPlugin.Properties.Resources.streamerbot_logo_Connected;
+            _connectionCount++;
+            MacroDeckLogger.Info(PluginInstance.Main, "WebSocket connected. In Main.cs");
+            UpdateStatusIcon();
         }
 
         private void OnDisconnect(object sender, EventArgs e)
         {
-            _statusButton.BackgroundImage = MrVibesRSA.StreamerbotPlugin.Properties.Resources.streamerbot_logo_Disconnected;
+            _connectionCount--;
+            MacroDeckLogger.Info(PluginInstance.Main, "WebSocket disconnected. In Main.cs");
+            UpdateStatusIcon();
         }
 
-        private void OnError(object sender, string e)
+        private void OnErrorMessageReceived(object sender, string e)
         {
-           _statusButton.BackgroundImage = MrVibesRSA.StreamerbotPlugin.Properties.Resources.streamerbot_logo_Error;
+            var source = sender as WebSocketService;
+            if (source == null) return;
+
+            MacroDeckLogger.Warning(PluginInstance.Main, $"WebSocket error in Main.cs: {e} for profile {source.ProfileId}");
+            if (e.Contains("canceled"))
+            {
+                return;
+            }
+
+            UpdateStatusIcon();
         }
 
-        private void Recieved_globals(object sender, string e)
+        private Image GetStatusIconWithOverlay()
         {
-            try
+            var totalProfile = _profile.GetAllProfiles().Count();
+            var services = _websocketProfileManager.GetAllServices().ToList();
+
+            bool hasError = services.Any(ws => ws.HasError);
+
+            MacroDeckLogger.Info(PluginInstance.Main, $"[StatusIcon] Total connectionCount: {_connectionCount}, totalProfile: {totalProfile}, HasError: {hasError}");
+
+            Color statusColor;
+
+            if (_connectionCount == 0 || totalProfile == 0)
             {
-                var json = JObject.Parse(e);
+                statusColor = Color.Gray; // Disconnected
+                // MacroDeckLogger.Info(PluginInstance.Main, "[StatusIcon] Status: Gray (Disconnected)");
+            }
+            else if (totalProfile == _connectionCount)
+            {
+                statusColor = Color.LimeGreen; // Fully connected
+                // MacroDeckLogger.Info(PluginInstance.Main, "[StatusIcon] Status: GREEN (Fully connected)");
+            }
+            else if (hasError)
+            {
+                statusColor = Color.Red; // Error detected
+                // MacroDeckLogger.Info(PluginInstance.Main, "[StatusIcon] Status: RED (Error detected)");
+            }
+            else
+            {
+                statusColor = Color.Orange; // Partial connection
+                // MacroDeckLogger.Info(PluginInstance.Main, "[StatusIcon] Status: ORANGE (Partial connection)");
+            }
 
-                if (json["id"]?.ToString() != "GetGlobalsForMacroDeck")
-                    return;
+            Bitmap result = new Bitmap(MrVibesRSA.StreamerbotPlugin.Properties.Resources.streamerbot_logo_transparent);
+            using (Graphics g = Graphics.FromImage(result))
+            {
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
-                // Parse the variables from JSON
-                var variablesJson = json["variables"] as JObject;
-                if (variablesJson == null)
-                    return;
+                int size = 196;
+                int padding = 25;
+                int x = result.Width - size - padding;
+                int y = result.Height - (size + 25) - padding;
 
-                // Fetch existing variables from Macro Deck
-                var existingVariables = VariableManager.GetVariables(PluginInstance.Main) ?? new List<Variable>();
-
-                string groupName = "Global_SB_Variables";
-
-                // Build dictionaries for easier lookup
-                var existingDict = existingVariables.ToDictionary(v => v.Name, v => v);
-                var incomingDict = new Dictionary<string, JToken>();
-
-                foreach (var prop in variablesJson.Properties())
+                using (Brush brush = new SolidBrush(statusColor))
                 {
-                    incomingDict[prop.Name] = prop.Value["value"];
-                }
-
-                // Handle added or updated variables
-                foreach (var kvp in incomingDict)
-                {
-                    string key = kvp.Key;
-                    var value = kvp.Value;
-
-                    if (!existingDict.ContainsKey(key))
-                    {
-                        // New variable -> Add it
-                        VariableType type = VariableTypeHelper.GetVariableType(value);
-                        VariableManager.SetValue(key, value.ToString(), type, PluginInstance.Main, new string[] { groupName });
-                    }
-                    else
-                    {
-                        // Existing variable -> Check if value needs update
-                        var existingVar = existingDict[key];
-                        if (existingVar.Value != value.ToString())
-                        {
-                            VariableType type = VariableTypeHelper.GetVariableType(value);
-                            VariableManager.SetValue(key, value.ToString(), type, PluginInstance.Main, new string[] { groupName });
-                        }
-                    }
-                }
-
-                foreach (var existing in existingDict.Keys)
-                {
-                    if (!incomingDict.ContainsKey(existing))
-                    {
-                        VariableManager.DeleteVariable(existing);
-                    }
+                    g.FillEllipse(brush, x, y, size, size);
                 }
             }
-            catch (Exception ex)
-            {
-                MacroDeckLogger.Error(PluginInstance.Main, $"Failed to sync globals: {ex.Message}");
-            }
-        }
 
-        private void Updated_global(object sender, string e)
-        {
-            try
-            {
-                var json = JObject.Parse(e);
-
-                var data = json["data"];
-                if (data == null)
-                    return;
-
-                string key = data["name"]?.ToString();
-                var newValue = data["newValue"];
-
-                if (string.IsNullOrEmpty(key) || newValue == null)
-                    return;
-
-                string groupName = "Global_SB_Variables";
-
-                VariableType type = VariableTypeHelper.GetVariableType(newValue);
-                VariableManager.SetValue(key, newValue.ToString(), type, PluginInstance.Main, new string[] { groupName });
-            }
-            catch (Exception ex)
-            {
-                MacroDeckLogger.Error(PluginInstance.Main, $"Failed to update global variable: {ex.Message}");
-            }
+            return result;
         }
     }
 }

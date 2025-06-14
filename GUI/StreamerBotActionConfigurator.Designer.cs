@@ -4,7 +4,7 @@ using SuchByte.MacroDeck.GUI.CustomControls;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace MrVibes_RSA.StreamerbotPlugin.GUI
+namespace MrVibesRSA.StreamerbotPlugin.GUI
 {
     partial class StreamerBotActionConfigurator
     {
@@ -36,6 +36,9 @@ namespace MrVibes_RSA.StreamerbotPlugin.GUI
         {
             components = new System.ComponentModel.Container();
             roundedPanel_Actions = new RoundedPanel();
+            roundedPanel2 = new RoundedPanel();
+            comboBox_SelectedProfile = new System.Windows.Forms.ComboBox();
+            label5 = new Label();
             roundedPanel1 = new RoundedPanel();
             textBox = new TextBox();
             contextMenu_JsonTextBox = new ContextMenuStrip(components);
@@ -53,6 +56,8 @@ namespace MrVibes_RSA.StreamerbotPlugin.GUI
             comboBox_ActionGroup = new System.Windows.Forms.ComboBox();
             label_Action = new Label();
             label_ActionGroup = new Label();
+            errorPanel = new RoundedPanel();
+            label_Error = new Label();
             roundedPanel_ActionInfo = new RoundedPanel();
             label_triggerCount = new Label();
             label_subactionCount = new Label();
@@ -63,20 +68,21 @@ namespace MrVibes_RSA.StreamerbotPlugin.GUI
             label_AnctionEnables_Text = new Label();
             label_AntionID_Text = new Label();
             label1 = new Label();
-            errorPanel = new RoundedPanel();
-            label2 = new Label();
             roundedPanel_Actions.SuspendLayout();
+            roundedPanel2.SuspendLayout();
             roundedPanel1.SuspendLayout();
             contextMenu_JsonTextBox.SuspendLayout();
             roundedPanel_ActionCombobox.SuspendLayout();
             roundedPanel_ActioGroupCombobox.SuspendLayout();
-            roundedPanel_ActionInfo.SuspendLayout();
             errorPanel.SuspendLayout();
+            roundedPanel_ActionInfo.SuspendLayout();
             SuspendLayout();
             // 
             // roundedPanel_Actions
             // 
             roundedPanel_Actions.BackColor = Color.FromArgb(36, 36, 36);
+            roundedPanel_Actions.Controls.Add(roundedPanel2);
+            roundedPanel_Actions.Controls.Add(label5);
             roundedPanel_Actions.Controls.Add(roundedPanel1);
             roundedPanel_Actions.Controls.Add(btn_Connect);
             roundedPanel_Actions.Controls.Add(label_Argument);
@@ -84,19 +90,57 @@ namespace MrVibes_RSA.StreamerbotPlugin.GUI
             roundedPanel_Actions.Controls.Add(roundedPanel_ActioGroupCombobox);
             roundedPanel_Actions.Controls.Add(label_Action);
             roundedPanel_Actions.Controls.Add(label_ActionGroup);
-            roundedPanel_Actions.Location = new Point(18, 13);
+            roundedPanel_Actions.Location = new Point(18, 6);
             roundedPanel_Actions.Name = "roundedPanel_Actions";
-            roundedPanel_Actions.Size = new Size(820, 293);
+            roundedPanel_Actions.Size = new Size(820, 323);
             roundedPanel_Actions.TabIndex = 18;
+            // 
+            // roundedPanel2
+            // 
+            roundedPanel2.BackColor = Color.FromArgb(65, 65, 65);
+            roundedPanel2.Controls.Add(comboBox_SelectedProfile);
+            roundedPanel2.Location = new Point(20, 31);
+            roundedPanel2.Name = "roundedPanel2";
+            roundedPanel2.Size = new Size(336, 22);
+            roundedPanel2.TabIndex = 26;
+            // 
+            // comboBox_SelectedProfile
+            // 
+            comboBox_SelectedProfile.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            comboBox_SelectedProfile.AutoCompleteSource = AutoCompleteSource.ListItems;
+            comboBox_SelectedProfile.BackColor = Color.FromArgb(65, 65, 65);
+            comboBox_SelectedProfile.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBox_SelectedProfile.FlatStyle = FlatStyle.Flat;
+            comboBox_SelectedProfile.Font = new Font("Tahoma", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            comboBox_SelectedProfile.ForeColor = Color.Gainsboro;
+            comboBox_SelectedProfile.FormattingEnabled = true;
+            comboBox_SelectedProfile.Location = new Point(-2, -1);
+            comboBox_SelectedProfile.Margin = new Padding(3, 3, 10, 3);
+            comboBox_SelectedProfile.Name = "comboBox_SelectedProfile";
+            comboBox_SelectedProfile.Size = new Size(337, 24);
+            comboBox_SelectedProfile.TabIndex = 20;
+            comboBox_SelectedProfile.SelectedIndexChanged += comboBox_SelectedProfile_SelectedIndexChanged;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.BackColor = Color.FromArgb(36, 36, 36);
+            label5.Font = new Font("Tahoma", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label5.ForeColor = Color.Gainsboro;
+            label5.Location = new Point(20, 7);
+            label5.Name = "label5";
+            label5.Size = new Size(54, 19);
+            label5.TabIndex = 25;
+            label5.Text = "Profile";
             // 
             // roundedPanel1
             // 
             roundedPanel1.BackColor = Color.FromArgb(65, 65, 65);
             roundedPanel1.Controls.Add(textBox);
             roundedPanel1.ForeColor = Color.Gainsboro;
-            roundedPanel1.Location = new Point(20, 83);
+            roundedPanel1.Location = new Point(20, 131);
             roundedPanel1.Name = "roundedPanel1";
-            roundedPanel1.Size = new Size(781, 198);
+            roundedPanel1.Size = new Size(781, 182);
             roundedPanel1.TabIndex = 24;
             // 
             // textBox
@@ -172,7 +216,7 @@ namespace MrVibes_RSA.StreamerbotPlugin.GUI
             btn_Connect.ForeColor = Color.White;
             btn_Connect.HoverColor = Color.Empty;
             btn_Connect.Icon = null;
-            btn_Connect.Location = new Point(704, 31);
+            btn_Connect.Location = new Point(704, 79);
             btn_Connect.Name = "btn_Connect";
             btn_Connect.Progress = 0;
             btn_Connect.ProgressColor = Color.FromArgb(0, 103, 205);
@@ -189,7 +233,7 @@ namespace MrVibes_RSA.StreamerbotPlugin.GUI
             label_Argument.BackColor = Color.FromArgb(36, 36, 36);
             label_Argument.Font = new Font("Tahoma", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label_Argument.ForeColor = Color.Gainsboro;
-            label_Argument.Location = new Point(20, 61);
+            label_Argument.Location = new Point(20, 109);
             label_Argument.Name = "label_Argument";
             label_Argument.Size = new Size(89, 19);
             label_Argument.TabIndex = 22;
@@ -199,7 +243,7 @@ namespace MrVibes_RSA.StreamerbotPlugin.GUI
             // 
             roundedPanel_ActionCombobox.BackColor = Color.FromArgb(65, 65, 65);
             roundedPanel_ActionCombobox.Controls.Add(comboBox_ActionList);
-            roundedPanel_ActionCombobox.Location = new Point(369, 33);
+            roundedPanel_ActionCombobox.Location = new Point(369, 81);
             roundedPanel_ActionCombobox.Name = "roundedPanel_ActionCombobox";
             roundedPanel_ActionCombobox.Size = new Size(329, 22);
             roundedPanel_ActionCombobox.TabIndex = 21;
@@ -218,13 +262,13 @@ namespace MrVibes_RSA.StreamerbotPlugin.GUI
             comboBox_ActionList.Name = "comboBox_ActionList";
             comboBox_ActionList.Size = new Size(330, 24);
             comboBox_ActionList.TabIndex = 21;
-            comboBox_ActionList.SelectedIndexChanged += comboBox_ActionList_SelectedIndexChanged_1;
+            comboBox_ActionList.SelectedIndexChanged += comboBox_ActionList_SelectedIndexChanged;
             // 
             // roundedPanel_ActioGroupCombobox
             // 
             roundedPanel_ActioGroupCombobox.BackColor = Color.FromArgb(65, 65, 65);
             roundedPanel_ActioGroupCombobox.Controls.Add(comboBox_ActionGroup);
-            roundedPanel_ActioGroupCombobox.Location = new Point(20, 33);
+            roundedPanel_ActioGroupCombobox.Location = new Point(20, 81);
             roundedPanel_ActioGroupCombobox.Name = "roundedPanel_ActioGroupCombobox";
             roundedPanel_ActioGroupCombobox.Size = new Size(336, 22);
             roundedPanel_ActioGroupCombobox.TabIndex = 20;
@@ -243,7 +287,7 @@ namespace MrVibes_RSA.StreamerbotPlugin.GUI
             comboBox_ActionGroup.Name = "comboBox_ActionGroup";
             comboBox_ActionGroup.Size = new Size(337, 24);
             comboBox_ActionGroup.TabIndex = 20;
-            comboBox_ActionGroup.SelectedIndexChanged += comboBox_ActionGroup_SelectedIndexChanged_1;
+            comboBox_ActionGroup.SelectedIndexChanged += comboBox_ActionGroup_SelectedIndexChanged;
             // 
             // label_Action
             // 
@@ -251,7 +295,7 @@ namespace MrVibes_RSA.StreamerbotPlugin.GUI
             label_Action.BackColor = Color.FromArgb(36, 36, 36);
             label_Action.Font = new Font("Tahoma", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label_Action.ForeColor = Color.Gainsboro;
-            label_Action.Location = new Point(369, 9);
+            label_Action.Location = new Point(369, 57);
             label_Action.Name = "label_Action";
             label_Action.Size = new Size(54, 19);
             label_Action.TabIndex = 4;
@@ -263,11 +307,31 @@ namespace MrVibes_RSA.StreamerbotPlugin.GUI
             label_ActionGroup.BackColor = Color.FromArgb(36, 36, 36);
             label_ActionGroup.Font = new Font("Tahoma", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label_ActionGroup.ForeColor = Color.Gainsboro;
-            label_ActionGroup.Location = new Point(20, 9);
+            label_ActionGroup.Location = new Point(20, 57);
             label_ActionGroup.Name = "label_ActionGroup";
             label_ActionGroup.Size = new Size(103, 19);
             label_ActionGroup.TabIndex = 3;
             label_ActionGroup.Text = "Action Group";
+            // 
+            // errorPanel
+            // 
+            errorPanel.BackColor = Color.FromArgb(45, 45, 45);
+            errorPanel.Controls.Add(label_Error);
+            errorPanel.Location = new Point(3, 3);
+            errorPanel.Name = "errorPanel";
+            errorPanel.Size = new Size(851, 425);
+            errorPanel.TabIndex = 20;
+            // 
+            // label_Error
+            // 
+            label_Error.BackColor = Color.FromArgb(45, 45, 45);
+            label_Error.ForeColor = Color.Gainsboro;
+            label_Error.Location = new Point(0, 33);
+            label_Error.Name = "label_Error";
+            label_Error.Size = new Size(848, 353);
+            label_Error.TabIndex = 0;
+            label_Error.Text = "\"Failed to populate the action group list. Please check your connection to Streamer.bot.\"";
+            label_Error.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // roundedPanel_ActionInfo
             // 
@@ -281,7 +345,7 @@ namespace MrVibes_RSA.StreamerbotPlugin.GUI
             roundedPanel_ActionInfo.Controls.Add(label_AnctionEnables_Text);
             roundedPanel_ActionInfo.Controls.Add(label_AntionID_Text);
             roundedPanel_ActionInfo.Controls.Add(label1);
-            roundedPanel_ActionInfo.Location = new Point(17, 312);
+            roundedPanel_ActionInfo.Location = new Point(17, 334);
             roundedPanel_ActionInfo.Name = "roundedPanel_ActionInfo";
             roundedPanel_ActionInfo.Size = new Size(820, 87);
             roundedPanel_ActionInfo.TabIndex = 19;
@@ -394,44 +458,25 @@ namespace MrVibes_RSA.StreamerbotPlugin.GUI
             label1.TabIndex = 4;
             label1.Text = "Action Info";
             // 
-            // errorPanel
-            // 
-            errorPanel.BackColor = Color.FromArgb(45, 45, 45);
-            errorPanel.Controls.Add(label2);
-            errorPanel.Location = new Point(3, 7);
-            errorPanel.Name = "errorPanel";
-            errorPanel.Size = new Size(851, 413);
-            errorPanel.TabIndex = 20;
-            // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.BackColor = Color.FromArgb(45, 45, 45);
-            label2.ForeColor = Color.Gainsboro;
-            label2.Location = new Point(38, 190);
-            label2.Name = "label2";
-            label2.Size = new Size(751, 23);
-            label2.TabIndex = 0;
-            label2.Text = "\"Failed to populate the action group list. Please check your connection to Streamer.bot.\"";
-            // 
             // StreamerBotActionConfigurator
             // 
             AutoScaleDimensions = new SizeF(96F, 96F);
-            Controls.Add(errorPanel);
             Controls.Add(roundedPanel_ActionInfo);
             Controls.Add(roundedPanel_Actions);
+            Controls.Add(errorPanel);
             Name = "StreamerBotActionConfigurator";
+            Size = new Size(857, 431);
             roundedPanel_Actions.ResumeLayout(false);
             roundedPanel_Actions.PerformLayout();
+            roundedPanel2.ResumeLayout(false);
             roundedPanel1.ResumeLayout(false);
             roundedPanel1.PerformLayout();
             contextMenu_JsonTextBox.ResumeLayout(false);
             roundedPanel_ActionCombobox.ResumeLayout(false);
             roundedPanel_ActioGroupCombobox.ResumeLayout(false);
+            errorPanel.ResumeLayout(false);
             roundedPanel_ActionInfo.ResumeLayout(false);
             roundedPanel_ActionInfo.PerformLayout();
-            errorPanel.ResumeLayout(false);
-            errorPanel.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -466,6 +511,9 @@ namespace MrVibes_RSA.StreamerbotPlugin.GUI
         private ToolStripMenuItem validateJsonToolStripMenuItem;
         private ToolStripSeparator toolStripSeparator3;
         private RoundedPanel errorPanel;
-        private Label label2;
+        private Label label_Error;
+        private RoundedPanel roundedPanel2;
+        private System.Windows.Forms.ComboBox comboBox_SelectedProfile;
+        private Label label5;
     }
 }

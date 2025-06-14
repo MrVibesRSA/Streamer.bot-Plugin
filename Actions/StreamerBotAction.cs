@@ -1,6 +1,6 @@
-﻿using MrVibes_RSA.StreamerbotPlugin.GUI;
+﻿using MrVibesRSA.StreamerbotPlugin.GUI;
 using MrVibesRSA.StreamerbotPlugin.Services;
-using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SuchByte.MacroDeck.ActionButton;
 using SuchByte.MacroDeck.GUI;
 using SuchByte.MacroDeck.GUI.CustomControls;
@@ -8,16 +8,16 @@ using SuchByte.MacroDeck.Logging;
 using SuchByte.MacroDeck.Plugins;
 using System;
 
-namespace MrVibes_RSA.StreamerbotPlugin.Actions
+namespace MrVibesRSA.StreamerbotPlugin.Actions
 {
     public class StreamerBotAction : PluginAction
     {
-        private WebSocketService webSocketService = WebSocketService.Instance;
+        private WebSocketProfileManager _profileManager = WebSocketProfileManager.Instance;
         // The name of the action
         public override string Name => "Run Action";
 
         // A short description what the action can do
-        public override string Description => "Select which Streamer.bot action to run.";
+        public override string Description => "Allows you to select and execute any available Streamer.bot action.";
 
         // Optional; Add if this action can be configured. This will make the ActionConfigurator calling GetActionConfigurator();
         public override bool CanConfigure => true;
@@ -35,28 +35,47 @@ namespace MrVibes_RSA.StreamerbotPlugin.Actions
         }
 
         // Optional; Gets called when the action button gets deleted
-        public override void OnActionButtonDelete()
-        {
-
-        }
+        public override void OnActionButtonDelete() { }
 
         // Optional; Gets called when the action button is loaded
-        public override void OnActionButtonLoaded()
-        {
-
-        }
+        public override void OnActionButtonLoaded() { }
 
         private void DoStreamerbotAction(string configuration)
         {
             try
             {
-                var configObject = JsonConvert.DeserializeObject<dynamic>(configuration);
+                if (string.IsNullOrWhiteSpace(configuration))
+                {
+                    MacroDeckLogger.Warning(PluginInstance.Main, "No configuration found for Streamer.bot action.");
+                    return;
+                }
 
-                webSocketService.DoAction(configObject.actionId.ToString(), configObject.actionArgument.ToString());
+                JObject configObject = JObject.Parse(configuration);
+
+                string profileId = configObject["profileId"]?.ToString();
+                string profile = configObject["profile"]?.ToString();
+                string actionId = configObject["actionId"]?.ToString();
+                string actionArgument = configObject["actionArgument"]?.ToString();
+
+                if (string.IsNullOrWhiteSpace(actionId))
+                {
+                    MacroDeckLogger.Warning(PluginInstance.Main, "Invalid Streamer.bot action configuration: actionId missing.");
+                    return;
+                }
+
+                WebSocketService? service = _profileManager.GetServiceByProfileId(profileId);
+
+                if (service == null || !service.IsConnected)
+                {
+                    MacroDeckLogger.Error(PluginInstance.Main, $"Streamer.bot profile '{profile}' is not connected.");
+                    return;
+                }
+
+                service.DoAction(actionId, actionArgument);
             }
             catch (Exception ex)
             {
-                MacroDeckLogger.Trace(PluginInstance.Main, $"Failed to execute action. Message: {ex.Message}");
+                MacroDeckLogger.Error(PluginInstance.Main, $"Failed to execute Streamer.bot action: {ex.Message}");
             }
         }
     }

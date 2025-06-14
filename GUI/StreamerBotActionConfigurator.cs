@@ -1,6 +1,4 @@
-﻿using MrVibesRSA.StreamerbotPlugin.GUI;
-using MrVibesRSA.StreamerbotPlugin.Models;
-using MrVibesRSA.StreamerbotPlugin.Services;
+﻿using MrVibesRSA.StreamerbotPlugin.Services;
 using MrVibesRSA.StreamerbotPlugin.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -9,148 +7,200 @@ using SuchByte.MacroDeck.GUI.CustomControls;
 using SuchByte.MacroDeck.Logging;
 using SuchByte.MacroDeck.Plugins;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace MrVibes_RSA.StreamerbotPlugin.GUI
+namespace MrVibesRSA.StreamerbotPlugin.GUI
 {
     public partial class StreamerBotActionConfigurator : ActionConfigControl
     {
+
         // Add a variable for the instance of your action to get access to the Configuration etc.
         private PluginAction _macroDeckAction;
-        private WebSocketService webSocketService = WebSocketService.Instance;
-        private GetActionsResponse _actionsData;
+        private WebSocketProfileManager _WebsocketProfileManager;
+        private ProfileManager _profile;
 
-        private bool isComboBoxPopulated = false;
-        private Timer connectionCheckTimer;
+        private List<MrVibesRSA.StreamerbotPlugin.Models.ActionItem> _currentActionsList = new List<MrVibesRSA.StreamerbotPlugin.Models.ActionItem>();
 
         public StreamerBotActionConfigurator(PluginAction macroDeckAction, ActionConfigurator actionConfigurator)
         {
             this._macroDeckAction = macroDeckAction;
             InitializeComponent();
-            InitializeConnectionCheck();
-            webSocketService.MessageReceived_Actions += WebSocketService_MessageReceived_Actions;
-            webSocketService.GetActionsList();
+
+            _WebsocketProfileManager = WebSocketProfileManager.Instance;
+            _profile = new ProfileManager();
+
+            ErrorPanelVisible(false,"");
+            LoadActionConfiguration();
         }
 
-        private void InitializeConnectionCheck()
+        private void LoadActionConfiguration()
         {
-            connectionCheckTimer = new Timer();
-            connectionCheckTimer.Interval = 5000; // 5 seconds delay
-            connectionCheckTimer.Tick += ConnectionCheckTimer_Tick;
-        }
-
-        private void WebSocketService_MessageReceived_Actions(object sender, string e)
-        {
-            isComboBoxPopulated = false; // Reset the flag before populating
-            PopulateActionGroupComboBox(e);
-            connectionCheckTimer.Start(); // Start the timer to monitor the population status
-        }
-
-        private void OnActionLoad()
-        {
-            // If _actionsData is null or empty, log an error and return early
-            if (_actionsData == null || _actionsData.actions == null || !_actionsData.actions.Any())
+            if (!PopulateProfileComboBox())
             {
-                MacroDeckLogger.Warning(PluginInstance.Main, "No actions found in _actionsData.");
+                ErrorPanelVisible(true, "\"No connected profiles found...\"");
                 return;
             }
 
-            // Check if the action list still contains the selected action from the configuration
-            var selectedActionId = _macroDeckAction.Configuration != null
-                ? JObject.Parse(_macroDeckAction.Configuration)["actionId"]?.ToString()
-                : null;
-
-            // Set the selected item in the comboBox based on the configuration's action ID
-            var selectedActionItem = comboBox_ActionList.Items
-                .OfType<ComboBoxItemHelper>()
-                .FirstOrDefault(item => item.Value.ToString() == selectedActionId);
-
-            if (selectedActionItem != null)
+            var config = _macroDeckAction.Configuration;
+            if (string.IsNullOrEmpty(config))
             {
-                comboBox_ActionList.SelectedItem = selectedActionItem;
+                comboBox_SelectedProfile.SelectedIndex = 0;
+                return;
             }
-            else
+
+            try
             {
-                // If the selected action is not in the combo box anymore, log a warning
-                // MacroDeckLogger.Warning(PluginInstance.Main, $"Selected action with ID '{selectedActionId}' is no longer in the list.");
+                var jConfig = JObject.Parse(config);
+                var profileId = jConfig["profileId"]?.ToString();
+                var actionId = jConfig["actionId"]?.ToString();
+
+                if (string.IsNullOrEmpty(profileId))
+                {
+                    comboBox_SelectedProfile.SelectedIndex = 0;
+                    return;
+                }
+
+                var profileExists = comboBox_SelectedProfile.Items.Cast<ComboBoxItemHelper>()
+                    .Any(item => item.Id?.ToString() == profileId);
+
+                if (!profileExists)
+                {
+                    ShowErrorMessage($"Profile ID '{profileId}' not found. Loading default");
+                    MacroDeckLogger.Warning(PluginInstance.Main, $"Profile ID '{profileId}' not found in list");
+                    comboBox_SelectedProfile.SelectedIndex = 0;
+                    return;
+                }
+
+                // Set the selected profile first
+                foreach (ComboBoxItemHelper item in comboBox_SelectedProfile.Items)
+                {
+                    if (item.Id.ToString() == profileId)
+                    {
+                        comboBox_SelectedProfile.SelectedItem = item;
+                        break;
+                    }
+                }
+
+                if (comboBox_SelectedProfile.SelectedItem is ComboBoxItemHelper selectedProfile)
+                {
+                    if (TryGetActionsList(selectedProfile.Id.ToString(), out var actionsList))
+                    {
+                        _currentActionsList = actionsList;
+                        PopulateActionGroupComboBox(_currentActionsList);
+                        PopulateActionList(_currentActionsList);
+
+                        // Try selecting the saved action
+                        var match = _currentActionsList.FirstOrDefault(a => a.Id == actionId);
+                        if (match != null)
+                        {
+                            foreach (ComboBoxItemHelper item in comboBox_ActionList.Items)
+                            {
+                                if (item.Id.ToString() == actionId)
+                                {
+                                    comboBox_ActionList.SelectedItem = item;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        ShowErrorMessage("Failed to load action list for selected profile");
+                    }
+                }
             }
-        }
-
-        private void ConnectionCheckTimer_Tick(object sender, EventArgs e)
-        {
-            // Stop the timer since we've checked
-            connectionCheckTimer.Stop();
-
-            // If the ComboBox is not populated, it could indicate a connection issue
-            if (!isComboBoxPopulated)
+            catch (Exception ex)
             {
-                // Show the error panel
-                errorPanel.Visible = true;
+                ShowErrorMessage("Error loading profile configuration");
+                MacroDeckLogger.Error(PluginInstance.Main, $"Configuration parse error: {ex.Message}. Loading default profile");
+                comboBox_SelectedProfile.SelectedIndex = 0;
             }
         }
 
-        private void PopulateActionGroupComboBox(string e)
+        private bool PopulateProfileComboBox()
         {
-            _actionsData = JsonConvert.DeserializeObject<GetActionsResponse>(e);
-            comboBox_ActionGroup.Items.Clear();
+            try
+            {
+                var profileList = _profile.GetAllProfiles();
+                if (profileList == null || !profileList.Any())
+                {
+                    MacroDeckLogger.Warning(PluginInstance.Main, "No connected profiles found when populating combo box");
+                    return false;
+                }
 
-            var actionGroups = _actionsData.actions
-                .Select(a => a.group)
-                .Distinct()
-                .OrderBy(g => g)
-                .ToList();
+                var comboBoxItems = profileList
+                    .Where(p => WebSocketProfileManager.Instance.HasConnection(p.Id))
+                    .Select(p => new ComboBoxItemHelper(p.Name, p.Id, true))
+                    .ToList();
 
-            comboBox_ActionGroup.Items.Add("All"); // Add "All" at the top
-            comboBox_ActionGroup.Items.AddRange(actionGroups.ToArray());
-            comboBox_ActionGroup.SelectedItem = "All";
+                comboBox_SelectedProfile.DataSource = comboBoxItems;
+                comboBox_SelectedProfile.DisplayMember = "Name";
+                comboBox_SelectedProfile.ValueMember = "Id";
 
-            isComboBoxPopulated = true;
-            errorPanel.Visible = false;
-            OnActionLoad();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MacroDeckLogger.Error(PluginInstance.Main, $"Failed to populate profile combo box: {ex.Message}");
+                return false;
+            }
         }
 
-        private void comboBox_ActionGroup_SelectedIndexChanged_1(object sender, EventArgs e)
+        private void PopulateActionGroupComboBox(List<MrVibesRSA.StreamerbotPlugin.Models.ActionItem> actionList)
         {
-            PopulateActionList();
+            try
+            {
+                var grouped = actionList
+                    .Where(a => !string.IsNullOrWhiteSpace(a.Group))
+                    .Select(a => a.Group)
+                    .Distinct()
+                    .OrderBy(g => g)
+                    .ToList();
+
+                bool hasUngrouped = actionList.Any(a => string.IsNullOrWhiteSpace(a.Group));
+
+                comboBox_ActionGroup.Items.Clear();
+                comboBox_ActionGroup.Items.Add("All");
+
+                if (hasUngrouped)
+                {
+                    comboBox_ActionGroup.Items.Add("Ungrouped");
+                }
+
+                comboBox_ActionGroup.Items.AddRange(grouped.ToArray());
+                comboBox_ActionGroup.SelectedItem = "All";
+            }
+            catch (Exception ex)
+            {
+                MacroDeckLogger.Error(PluginInstance.Main, $"Unexpected error populating action groups: {ex.Message}");
+            }
         }
 
-        private void comboBox_ActionList_SelectedIndexChanged_1(object sender, EventArgs e)
+        private void PopulateActionList(List<MrVibesRSA.StreamerbotPlugin.Models.ActionItem> actions)
         {
-            var selectedItem = comboBox_ActionList.SelectedItem as ComboBoxItemHelper;
-            if (selectedItem == null) return;
-
-            // Find the full action object using the ID
-            var selectedAction = _actionsData.actions.FirstOrDefault(a => a.id == selectedItem.Value.ToString());
-            if (selectedAction == null) return;
-
-            // Now you have full details
-            string actionName = selectedAction.name;
-            bool isEnabled = selectedAction.enabled;
-            int subActionCount = selectedAction.subaction_count;
-            int triggerCount = selectedAction.trigger_count;
-
-            label_actionId.Text = selectedAction.id;
-            label_actionEnabled.Text = isEnabled.ToString();
-            label_subactionCount.Text = subActionCount.ToString();
-            label_triggerCount.Text = triggerCount.ToString();
-        }
-
-        private void PopulateActionList()
-        {
-            var selectedGroup = comboBox_ActionGroup.SelectedItem?.ToString();
+            string selectedGroup = comboBox_ActionGroup.SelectedItem?.ToString();
             if (string.IsNullOrEmpty(selectedGroup)) return;
 
-            var filteredActions = _actionsData.actions
-                .Where(a => selectedGroup == "All" || a.group == selectedGroup)
-                .OrderBy(a => a.name)
-                .ToList();
+            var filteredActions = selectedGroup switch
+            {
+                "All" => actions,
+                "Ungrouped" => actions
+                    .Where(a => string.IsNullOrWhiteSpace(a.Group))
+                    .OrderBy(a => a.Name)
+                    .ToList(),
+                _ => actions
+                    .Where(a => a.Group == selectedGroup)
+                    .OrderBy(a => a.Name)
+                    .ToList()
+            };
 
             comboBox_ActionList.Items.Clear();
 
             foreach (var action in filteredActions)
             {
-                comboBox_ActionList.Items.Add(new ComboBoxItemHelper(action.name, action.id));
+                comboBox_ActionList.Items.Add(new ComboBoxItemHelper(action.Name, action.Id));
             }
 
             if (comboBox_ActionList.Items.Count > 0)
@@ -159,9 +209,52 @@ namespace MrVibes_RSA.StreamerbotPlugin.GUI
             }
         }
 
+        private void comboBox_SelectedProfile_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBox_SelectedProfile.SelectedItem is ComboBoxItemHelper selectedProfile)
+            {
+                if (!TryGetActionsList(selectedProfile.Id.ToString(), out var actionList))
+                {
+                    /// Show error message and log
+                    MacroDeckLogger.Error(PluginInstance.Main, $"Failed to retrieve actions list for profile {selectedProfile.Name} ({selectedProfile.Id})");
+                    return;
+                }
+
+                _currentActionsList = actionList;
+                PopulateActionGroupComboBox(actionList);
+                PopulateActionList(actionList);
+            }
+        }
+
+        private void comboBox_ActionGroup_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBox_SelectedProfile.SelectedItem is ComboBoxItemHelper selectedProfile &&
+            TryGetActionsList(selectedProfile.Id.ToString(), out var actionList))
+            {
+                PopulateActionList(actionList);
+            }
+        }
+
+        private void comboBox_ActionList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBox_ActionList.SelectedItem is not ComboBoxItemHelper selectedItem) return;
+
+            var selectedAction = _currentActionsList.FirstOrDefault(a => a.Id == selectedItem.Id.ToString());
+            if (selectedAction == null) return;
+
+            label_actionId.Text = selectedAction.Id;
+            label_actionEnabled.Text = selectedAction.Enabled.ToString();
+            label_subactionCount.Text = selectedAction.SubactionCount.ToString();
+            label_triggerCount.Text = selectedAction.TriggerCount.ToString();
+        }
+
         private void btn_Refresh_Click(object sender, EventArgs e)
         {
-            webSocketService.GetActionsList();
+            var selectedProfileItem = comboBox_SelectedProfile.SelectedItem as ComboBoxItemHelper;
+            var service = _WebsocketProfileManager.GetServiceByProfileId(selectedProfileItem?.Id.ToString());
+            if (service == null) return;
+
+            service.GetActionsList();
         }
 
         private void copyToolStripMenuItem_Click(object sender, EventArgs e)
@@ -226,48 +319,42 @@ namespace MrVibes_RSA.StreamerbotPlugin.GUI
 
         private void ShowErrorMessage(string message)
         {
-            using var error = new ErrorMessage(message);
+            using var error = new CustomDialog(message);
             error.ShowDialog();
         }
 
         public override bool OnActionSave()
         {
-            // Step 1: Check if a valid action is selected
-            var selectedItem = comboBox_ActionList.SelectedItem as ComboBoxItemHelper;
-            if (selectedItem == null)
-            {
-                // No action selected, return false
+            if (comboBox_SelectedProfile.SelectedItem is not ComboBoxItemHelper selectedProfileItem)
                 return false;
-            }
+
+            if (comboBox_ActionList.SelectedItem is not ComboBoxItemHelper selectedItem)
+                return false;
 
             try
             {
-                // Step 2: Find the full action object using the ID from selected item
-                var selectedAction = _actionsData.actions.FirstOrDefault(a => a.id == selectedItem.Value.ToString());
+                // Find the selected action from the current list
+                var selectedAction = _currentActionsList.FirstOrDefault(a => a.Id == selectedItem.Id.ToString());
                 if (selectedAction == null)
-                {
-                    // Action was not found, return false
                     return false;
-                }
 
-                // Step 3: Create configuration JObject to save action details
                 JObject configuration = new JObject
                 {
-                    ["actionId"] = selectedAction.id,
-                    ["actionName"] = selectedAction.name,
+                    ["profileId"] = selectedProfileItem.Id.ToString(),
+                    ["profile"] = selectedProfileItem.Name,
+                    ["actionId"] = selectedAction.Id,
+                    ["actionName"] = selectedAction.Name,
                     ["actionArgument"] = textBox.Text,
-                    ["actionGroup"] = selectedAction.group,
-                    ["actionEnabled"] = selectedAction.enabled,
-                    ["actionSubactionCount"] = selectedAction.subaction_count,
-                    ["actionTriggerCount"] = selectedAction.trigger_count
+                    ["actionGroup"] = selectedAction.Group,
+                    ["actionEnabled"] = selectedAction.Enabled,
+                    ["actionSubactionCount"] = selectedAction.SubactionCount,
+                    ["actionTriggerCount"] = selectedAction.TriggerCount
                 };
 
-                // Step 4: Create a summary based on the action's name and argument
                 string summary = string.IsNullOrEmpty(configuration["actionArgument"]?.ToString())
-                    ? $"Name - '{configuration["actionName"]}'"
-                    : $"Name - '{configuration["actionName"]}', Value - '{configuration["actionArgument"]}'";
+                    ? $"Profile - '{configuration["profile"]}', Action Name - '{configuration["actionName"]}'"
+                    : $"Profile - '{configuration["profile"]}', Action Name - '{configuration["actionName"]}', Value - '{configuration["actionArgument"]}'";
 
-                // Step 5: Save the summary and configuration
                 this._macroDeckAction.ConfigurationSummary = summary;
                 this._macroDeckAction.Configuration = configuration.ToString();
 
@@ -277,6 +364,36 @@ namespace MrVibes_RSA.StreamerbotPlugin.GUI
             {
                 MacroDeckLogger.Error(PluginInstance.Main, $"Error while saving action: {ex.Message}");
                 return false;
+            }
+        }
+
+        private bool TryGetActionsList(string profileId, out List<MrVibesRSA.StreamerbotPlugin.Models.ActionItem> actionsList)
+        {
+            actionsList = null;
+
+            try
+            {
+                actionsList = DataManager.GetActionsList(profileId);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MacroDeckLogger.Warning(PluginInstance.Main, $"Failed to get actions list for profile {profileId}: {ex.Message}");
+                return false;
+            }
+        }
+
+        public void ErrorPanelVisible(bool visible,string error)
+        {
+            label_Error.Text = error;
+            errorPanel.Visible = visible;
+            if (visible)
+            {
+                errorPanel.BringToFront();
+            }
+            else
+            {
+                errorPanel.SendToBack();
             }
         }
     }

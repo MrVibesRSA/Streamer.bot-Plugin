@@ -1,27 +1,21 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
-
-namespace MrVibesRSA.StreamerbotPlugin.Utilities
+﻿namespace MrVibesRSA.StreamerbotPlugin.Utilities
 {
     public class ComboBoxItemHelper
     {
-        public string Text { get; set; }
-        public object Value { get; set; }
+        public string Name { get; set; }
+        public object Id { get; set; }
+        public bool IsConnected { get; set; }
 
-        public ComboBoxItemHelper(string text, object value)
+        public ComboBoxItemHelper(string name, string id, bool isConnected = false)
         {
-            Text = text;
-            Value = value;
+            Name = name;
+            Id = id;
+            IsConnected = isConnected;
         }
 
         public override string ToString()
         {
-            return Text; // Important for display
+            return Name; // Important for display
         }
     }
 }

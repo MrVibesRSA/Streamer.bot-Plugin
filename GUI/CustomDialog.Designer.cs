@@ -1,6 +1,6 @@
 ﻿namespace MrVibesRSA.StreamerbotPlugin.GUI
 {
-    partial class ErrorMessage
+    partial class CustomDialog
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,21 +28,22 @@
         /// </summary>
         private void InitializeComponent()
         {
-            label1 = new System.Windows.Forms.Label();
+            label_MessageTitle = new System.Windows.Forms.Label();
             btn_OK = new SuchByte.MacroDeck.GUI.CustomControls.ButtonPrimary();
             label2 = new System.Windows.Forms.Label();
             panel1 = new SuchByte.MacroDeck.GUI.CustomControls.RoundedPanel();
+            btn_Cancel = new SuchByte.MacroDeck.GUI.CustomControls.ButtonPrimary();
             panel1.SuspendLayout();
             SuspendLayout();
             // 
-            // label1
+            // label_MessageTitle
             // 
-            label1.AutoSize = true;
-            label1.Location = new System.Drawing.Point(12, 6);
-            label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(90, 16);
-            label1.TabIndex = 2;
-            label1.Text = "Error Message";
+            label_MessageTitle.AutoSize = true;
+            label_MessageTitle.Location = new System.Drawing.Point(12, 6);
+            label_MessageTitle.Name = "label_MessageTitle";
+            label_MessageTitle.Size = new System.Drawing.Size(90, 16);
+            label_MessageTitle.TabIndex = 2;
+            label_MessageTitle.Text = "Error Message";
             // 
             // btn_OK
             // 
@@ -53,7 +54,7 @@
             btn_OK.ForeColor = System.Drawing.Color.White;
             btn_OK.HoverColor = System.Drawing.Color.Empty;
             btn_OK.Icon = null;
-            btn_OK.Location = new System.Drawing.Point(190, 177);
+            btn_OK.Location = new System.Drawing.Point(352, 176);
             btn_OK.Name = "btn_OK";
             btn_OK.Progress = 0;
             btn_OK.ProgressColor = System.Drawing.Color.FromArgb(0, 103, 205);
@@ -84,19 +85,38 @@
             panel1.Size = new System.Drawing.Size(446, 140);
             panel1.TabIndex = 12;
             // 
-            // ErrorMessage
+            // btn_Cancel
+            // 
+            btn_Cancel.BorderRadius = 8;
+            btn_Cancel.FlatAppearance.BorderColor = System.Drawing.Color.Cyan;
+            btn_Cancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btn_Cancel.Font = new System.Drawing.Font("Tahoma", 9.75F);
+            btn_Cancel.ForeColor = System.Drawing.Color.White;
+            btn_Cancel.HoverColor = System.Drawing.Color.Empty;
+            btn_Cancel.Icon = null;
+            btn_Cancel.Location = new System.Drawing.Point(271, 176);
+            btn_Cancel.Name = "btn_Cancel";
+            btn_Cancel.Progress = 0;
+            btn_Cancel.ProgressColor = System.Drawing.Color.FromArgb(0, 103, 205);
+            btn_Cancel.Size = new System.Drawing.Size(75, 23);
+            btn_Cancel.TabIndex = 13;
+            btn_Cancel.Text = "Cancel";
+            btn_Cancel.UseVisualStyleBackColor = false;
+            btn_Cancel.UseWindowsAccentColor = true;
+            btn_Cancel.WriteProgress = true;
+            btn_Cancel.Click += btn_Cancel_Click;
+            // 
+            // CustomDialog
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(455, 203);
+            Controls.Add(btn_Cancel);
             Controls.Add(btn_OK);
-            Controls.Add(label1);
+            Controls.Add(label_MessageTitle);
             Controls.Add(panel1);
-            Location = new System.Drawing.Point(0, 0);
-            Name = "ErrorMessage";
-            Controls.SetChildIndex(panel1, 0);
-            Controls.SetChildIndex(label1, 0);
-            Controls.SetChildIndex(btn_OK, 0);
+            FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            Name = "CustomDialog";
             panel1.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
@@ -104,9 +124,10 @@
 
         #endregion
 
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label_MessageTitle;
         private SuchByte.MacroDeck.GUI.CustomControls.ButtonPrimary btn_OK;
         private System.Windows.Forms.Label label2;
         private SuchByte.MacroDeck.GUI.CustomControls.RoundedPanel panel1;
+        private SuchByte.MacroDeck.GUI.CustomControls.ButtonPrimary btn_Cancel;
     }
 }

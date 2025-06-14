@@ -2,7 +2,7 @@
 
 Streamer.bot plugin for Macro Deck.
 
-Updated 29/04/2025 [Changelog](#changelog) 
+Updated 14/06/2025 [Changelog](#changelog) 
 
 ---
 
@@ -37,7 +37,14 @@ Enter the WebSocket server address, port number, and endpoint provided by your S
 ---
 
 ## Changelog
-Updated 29/04/2025
+Update 14/06/2025 v2.0.0
+- **Added multi-profile support** — create and manage multiple Streamer.bot connection profiles.
+- **Improved auto-connect system** — fixed issues where auto-connect would fail under certain conditions.
+- **Major performance and stability improvements** — cleaner architecture and more reliable connections.
+  - Enhanced UI feedback during connection setup and runtime errors.
+  - Refactored plugin structure for better scalability and easier future development.
+
+Update 29/04/2025 v1.0.3
 - **Completely rebuilt the plugin** for easier maintenance and feature addition.
 - **Moved from using WebSocketSharp** to `System.Net.WebSockets`.
 - **Auto-connect on start** functionality added.
@@ -64,6 +71,7 @@ Updated 29/04/2025
 ### Streamer.bot - Actions
 A collection of MrVibes_RSA's Streamer.bot actions.
 
+- [Advanced Giveaway](Advanced-Giveaway/README.md)
 - [Ask Magic 8-ball](Magic-8-ball/README.md)
 - [Improved Deathcounter](Improved-Deathcounter/README.md)
 - [Shadows-Lurker](Shadows-Lurker/README.md)
