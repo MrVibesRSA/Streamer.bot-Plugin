@@ -2,7 +2,7 @@
 
 Streamer.bot plugin for Macro Deck.
 
-Updated 14/06/2025 [Changelog](#changelog) 
+Updated 27/08/2025 [Changelog](#changelog) 
 
 ---
 
@@ -35,6 +35,10 @@ Enter the WebSocket server address, port number, and endpoint provided by your S
 ![Example: Macro Deck Variables](Images/Macro_Deck_Variables.png)
 
 ---
+
+## Changelog
+Update 27/08/2025 v2.1.0
+- **Added support for subscribing to Streamer.bot events** — You can now subscribe or unsubscribe from Streamer.bot events directly.
 
 ## Changelog
 Update 14/06/2025 v2.0.0
