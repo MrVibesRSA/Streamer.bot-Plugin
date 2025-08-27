@@ -1,5 +1,6 @@
 ﻿using SuchByte.MacroDeck.GUI.CustomControls;
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -15,6 +16,8 @@ namespace MrVibesRSA.StreamerbotPlugin.GUI
 
     public partial class CustomDialog : DialogForm
     {
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public DialogResult Result { get; private set; } = DialogResult.None;
 
         public CustomDialog(string message, CustomDialogType type = CustomDialogType.Info,

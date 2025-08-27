@@ -32,8 +32,8 @@ namespace MrVibesRSA.StreamerbotPlugin.GUI
         /// </summary>
         private void InitializeComponent()
         {
-            TreeNode treeNode3 = new TreeNode("Event");
-            TreeNode treeNode4 = new TreeNode("Category", new TreeNode[] { treeNode3 });
+            TreeNode treeNode1 = new TreeNode("Event");
+            TreeNode treeNode2 = new TreeNode("Category", new TreeNode[] { treeNode1 });
             label1 = new Label();
             label2 = new Label();
             label3 = new Label();
@@ -691,7 +691,6 @@ namespace MrVibesRSA.StreamerbotPlugin.GUI
             button_EventList.TabIndex = 20;
             button_EventList.Text = "Event list";
             button_EventList.UseVisualStyleBackColor = false;
-            button_EventList.Visible = false;
             button_EventList.Click += button_EventList_Click;
             // 
             // roundedPanel_Eventlist
@@ -791,11 +790,11 @@ namespace MrVibesRSA.StreamerbotPlugin.GUI
             treeView_Events.LineColor = Color.FromArgb(65, 65, 65);
             treeView_Events.Location = new Point(17, 35);
             treeView_Events.Name = "treeView_Events";
-            treeNode3.Name = "Event";
-            treeNode3.Text = "Event";
-            treeNode4.Name = "Category";
-            treeNode4.Text = "Category";
-            treeView_Events.Nodes.AddRange(new TreeNode[] { treeNode4 });
+            treeNode1.Name = "Event";
+            treeNode1.Text = "Event";
+            treeNode2.Name = "Category";
+            treeNode2.Text = "Category";
+            treeView_Events.Nodes.AddRange(new TreeNode[] { treeNode2 });
             treeView_Events.Size = new Size(594, 339);
             treeView_Events.TabIndex = 0;
             treeView_Events.AfterCheck += treeView_Events_AfterCheck;
