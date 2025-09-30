@@ -377,36 +377,45 @@ namespace MrVibesRSA.StreamerbotPlugin.GUI
 
         private void LoadEventsIntoTreeView(Dictionary<string, List<EventWithSubscription>> events)
         {
-            treeView_Events.BeginUpdate();
-            treeView_Events.Nodes.Clear();
-
-            // Store current profile's events for saving later
-            _currentEvents = events ?? new Dictionary<string, List<EventWithSubscription>>();
-
-            // Sort parent keys alphabetically
-            foreach (var source in _currentEvents.OrderBy(e => e.Key))
+            try 
             {
-                var parentNode = new TreeNode(source.Key);
+                treeView_Events.BeginUpdate();
+                treeView_Events.Nodes.Clear();
 
-                foreach (var ev in source.Value)
+                // Store current profile's events for saving later
+                _currentEvents = events ?? new Dictionary<string, List<EventWithSubscription>>();
+
+                // Sort parent keys alphabetically
+                foreach (var source in _currentEvents.OrderBy(e => e.Key))
                 {
-                    var childNode = new TreeNode(ev.Name)
+                    var parentNode = new TreeNode(source.Key);
+
+                    foreach (var ev in source.Value)
                     {
-                        Checked = ev.Subscribed
-                    };
-                    parentNode.Nodes.Add(childNode);
+                        var childNode = new TreeNode(ev.Name)
+                        {
+                            Checked = ev.Subscribed
+                        };
+                        parentNode.Nodes.Add(childNode);
+                    }
+
+                    treeView_Events.Nodes.Add(parentNode);
                 }
 
-                treeView_Events.Nodes.Add(parentNode);
-            }
+                // After all nodes are added, update parent labels for partial selection
+                foreach (TreeNode parent in treeView_Events.Nodes)
+                {
+                    UpdateParentLabel(parent);
+                }
 
-            // After all nodes are added, update parent labels for partial selection
-            foreach (TreeNode parent in treeView_Events.Nodes)
+                treeView_Events.EndUpdate();
+            }
+            catch 
             {
-                UpdateParentLabel(parent);
+                MacroDeckLogger.Info(PluginInstance.Main, "No events loaded or error loading events. Streamer.bot not logged in or running.");
+
             }
 
-            treeView_Events.EndUpdate();
         }
 
 
@@ -754,20 +763,36 @@ namespace MrVibesRSA.StreamerbotPlugin.GUI
 
             var profileList = _profile.GetAllProfiles();
             if (profileList != null && profileList.Any())
-
             {
                 var comboBoxItems = profileList
-                .Where(p => _WebsocketProfileManager.HasConnection(p.Id))
-                .Select(p => new ComboBoxItemHelper(p.Name, p.Id, true))
-                .ToList();
+                    .Where(p => _WebsocketProfileManager.HasConnection(p.Id))
+                    .Select(p => new ComboBoxItemHelper(p.Name, p.Id, true))
+                    .ToList();
 
                 comboBox_ProfileListForEvents.DataSource = comboBoxItems;
                 comboBox_ProfileListForEvents.DisplayMember = "Name";
                 comboBox_ProfileListForEvents.ValueMember = "Id";
-                comboBox_ProfileListForEvents.SelectedIndex = 0;
+
+                if (comboBoxItems.Count > 0)
+                {
+                    comboBox_ProfileListForEvents.SelectedIndex = 0;
+                }
+                else
+                {
+                    comboBox_ProfileListForEvents.SelectedIndex = -1; // no valid items
+                }
+
                 comboBox_ProfileListForEvents.Refresh();
             }
+            else
+            {
+                // Clear if no profiles at all
+                comboBox_ProfileListForEvents.DataSource = null;
+                comboBox_ProfileListForEvents.Items.Clear();
+                comboBox_ProfileListForEvents.SelectedIndex = -1;
+            }
         }
+
 
         private void comboBox_ProfileListForEvents_SelectedIndexChanged(object sender, EventArgs e)
         {
