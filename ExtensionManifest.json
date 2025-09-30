@@ -4,9 +4,9 @@
   "author": "MrVibes_RSA",
   "repository": "https://github.com/MrVibesRSA/Streamer.bot-Plugin",
   "packageId": "MrVibesRSA.StreamerbotPlugin",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "target-plugin-api-version": 40,
-  "target-macro-deck-version" : "2.13.1",
+  "target-macro-deck-version" : "2.14.1",
   "dll": "Streamer.botPlugin.dll",
   "author-discord-userid": 363735104872251392
 }
